@@ -3,6 +3,7 @@ import 'package:forecast_app/widgets/captured_satellites.dart';
 import 'package:forecast_app/widgets/cloudiness.dart';
 import 'package:forecast_app/widgets/gusts.dart';
 import 'package:forecast_app/widgets/kp_index.dart';
+import 'package:forecast_app/widgets/non_flight_zones.dart';
 import 'package:forecast_app/widgets/precipitation.dart';
 import 'package:forecast_app/widgets/recommendation.dart';
 import 'package:forecast_app/widgets/sun.dart';
@@ -59,9 +60,7 @@ class MyHomePage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Recommendation(),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Expanded(
               flex: 1,
               child: GridView.count(
@@ -86,6 +85,8 @@ class MyHomePage extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 10),
+            const NonFlightZones(),
           ],
         ),
       ),
