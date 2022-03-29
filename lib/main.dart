@@ -8,6 +8,7 @@ import 'package:forecast_app/widgets/precipitation.dart';
 import 'package:forecast_app/widgets/recommendation.dart';
 import 'package:forecast_app/widgets/sun.dart';
 import 'package:forecast_app/widgets/temperature.dart';
+import 'package:forecast_app/widgets/time_slider.dart';
 import 'package:forecast_app/widgets/visible_satellites.dart';
 import 'package:forecast_app/widgets/weather.dart';
 import 'package:forecast_app/widgets/wind_speed.dart';
@@ -87,6 +88,8 @@ class MyHomePage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const NonFlightZones(),
+            const SizedBox(height: 10),
+            const TimeSlider(),
           ],
         ),
       ),
