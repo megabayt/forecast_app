@@ -4,6 +4,7 @@ import 'package:forecast_app/widgets/cloudiness.dart';
 import 'package:forecast_app/widgets/gusts.dart';
 import 'package:forecast_app/widgets/kp_index.dart';
 import 'package:forecast_app/widgets/precipitation.dart';
+import 'package:forecast_app/widgets/recommendation.dart';
 import 'package:forecast_app/widgets/sun.dart';
 import 'package:forecast_app/widgets/temperature.dart';
 import 'package:forecast_app/widgets/visible_satellites.dart';
@@ -48,37 +49,46 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: Center(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
+            const Recommendation(),
+            const SizedBox(
+              height: 10,
+            ),
             Expanded(
-                child: GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(20),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 3,
-              children: const <Widget>[
-                Weather(),
-                Sun(),
-                Temperature(),
-                WindSpeed(),
-                Gusts(),
-                WindDirection(),
-                Precipitation(),
-                Cloudiness(),
-                visibility_widget.Visibility(),
-                VisibleSatellites(),
-                KpIndex(),
-                CapturedSatellites(),
-              ],
-            )),
+              flex: 1,
+              child: GridView.count(
+                primary: false,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: 3,
+                childAspectRatio: 1.65,
+                children: const <Widget>[
+                  Weather(),
+                  Sun(),
+                  Temperature(),
+                  WindSpeed(),
+                  Gusts(),
+                  WindDirection(),
+                  Precipitation(),
+                  Cloudiness(),
+                  visibility_widget.Visibility(),
+                  VisibleSatellites(),
+                  KpIndex(),
+                  CapturedSatellites(),
+                ],
+              ),
+            ),
           ],
-        )));
+        ),
+      ),
+    );
   }
 }
