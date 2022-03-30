@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forecast_app/widgets/captured_satellites.dart';
 import 'package:forecast_app/widgets/cloudiness.dart';
+import 'package:forecast_app/widgets/day_picker.dart' as day_picker_widget;
 import 'package:forecast_app/widgets/gusts.dart';
 import 'package:forecast_app/widgets/kp_index.dart';
 import 'package:forecast_app/widgets/non_flight_zones.dart';
@@ -90,6 +91,7 @@ class MyHomePage extends StatelessWidget {
             const NonFlightZones(),
             const SizedBox(height: 10),
             const TimeSlider(),
+            const day_picker_widget.DayPicker(),
           ],
         ),
       ),
