@@ -4,6 +4,7 @@ import 'package:forecast_app/widgets/cloudiness.dart';
 import 'package:forecast_app/widgets/day_picker.dart' as day_picker_widget;
 import 'package:forecast_app/widgets/gusts.dart';
 import 'package:forecast_app/widgets/kp_index.dart';
+import 'package:forecast_app/widgets/location_search.dart';
 import 'package:forecast_app/widgets/non_flight_zones.dart';
 import 'package:forecast_app/widgets/precipitation.dart';
 import 'package:forecast_app/widgets/recommendation.dart';
@@ -61,6 +62,7 @@ class MyHomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
+            const LocationSearch(),
             const Recommendation(),
             const SizedBox(height: 10),
             Expanded(
