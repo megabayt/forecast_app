@@ -36,6 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   syncfusion_flutter_sliders: ^19.4.56
   collection: ^1.15.0
+  bloc: ^8.0.0
+  flutter_bloc: ^8.0.0
+  get_it: ^7.2.0
+  http: ^0.13.4
+  copy_with_extension: ^4.0.0
+  flutter_dotenv: ^5.0.2
+  geolocator: ^8.2.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +54,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+  build_runner: ^2.1.7
+  copy_with_extension_gen: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -89,3 +98,39 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  assets:
+    - .env
+    - assets/weather_icons/0.png
+    - assets/weather_icons/1.png
+    - assets/weather_icons/2.png
+    - assets/weather_icons/3.png
+    - assets/weather_icons/4.png
+    - assets/weather_icons/5.png
+    - assets/weather_icons/6.png
+    - assets/weather_icons/7.png
+    - assets/weather_icons/8.png
+    - assets/weather_icons/9.png
+    - assets/weather_icons/10.png
+    - assets/weather_icons/11.png
+    - assets/weather_icons/12.png
+    - assets/weather_icons/13.png
+    - assets/weather_icons/14.png
+    - assets/weather_icons/15.png
+    - assets/weather_icons/16.png
+    - assets/weather_icons/101.png
+    - assets/weather_icons/102.png
+    - assets/weather_icons/103.png
+    - assets/weather_icons/104.png
+    - assets/weather_icons/105.png
+    - assets/weather_icons/106.png
+    - assets/weather_icons/107.png
+    - assets/weather_icons/108.png
+    - assets/weather_icons/109.png
+    - assets/weather_icons/110.png
+    - assets/weather_icons/111.png
+    - assets/weather_icons/112.png
+    - assets/weather_icons/113.png
+    - assets/weather_icons/114.png
+    - assets/weather_icons/115.png
+    - assets/weather_icons/116.png

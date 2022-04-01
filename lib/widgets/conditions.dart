@@ -38,7 +38,7 @@ class Conditions extends StatelessWidget {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               crossAxisCount: 3,
-              childAspectRatio: 1.65,
+              childAspectRatio: 1.4,
               children: const <Widget>[
                 Weather(),
                 Sun(),

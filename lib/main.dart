@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forecast_app/blocs/bloc/weather_bloc.dart';
 import 'package:forecast_app/widgets/conditions.dart';
-
-void main() => runApp(const MyApp());
+import 'package:forecast_app/services/service_locator.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+Future main() async {
+  await dotenv.load(fileName: ".env");
+  setupServiceLocator();
+  runApp(
+    BlocProvider(
+      create: (_) => WeatherBloc()..add(WeatherFetch()),
+      lazy: false,
+      child: const MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
