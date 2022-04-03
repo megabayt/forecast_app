@@ -25,7 +25,7 @@ class Weather extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
                   'Погода',
