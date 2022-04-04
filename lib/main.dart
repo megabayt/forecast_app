@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
+import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
 import 'package:forecast_app/widgets/conditions.dart';
 import 'package:forecast_app/services/service_locator.dart';
@@ -22,9 +23,14 @@ Future main() async {
           lazy: false,
         ),
         BlocProvider(
+          create: (_) => TemperatureCubit(),
+          lazy: false,
+        ),
+        BlocProvider(
           create: (context) => CommonBloc(
             weatherCubit: BlocProvider.of<WeatherCubit>(context),
             sunCubit: BlocProvider.of<SunCubit>(context),
+            temperatureCubit: BlocProvider.of<TemperatureCubit>(context),
           )..add(FetchAll()),
           lazy: false,
         ),

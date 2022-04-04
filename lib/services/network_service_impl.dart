@@ -54,7 +54,7 @@ class NetworkServiceImpl implements NetworkService {
     int? windSpeedHeight,
     int? windGustsHeight,
     int? windDirectionHeight,
-    int? temperatureHeight,
+    bool? temperature,
     bool? precipitation,
     bool? weatherSymbol,
     bool? sunrise,
@@ -71,8 +71,8 @@ class NetworkServiceImpl implements NetworkService {
     if (windGustsHeight != null) {
       params.add('wind_gusts_${windGustsHeight}m:ms');
     }
-    if (temperatureHeight != null) {
-      params.add('t_${temperatureHeight}m:C');
+    if (temperature != null && temperature) {
+      params.add('t_0m:C');
     }
     if (precipitation != null && precipitation) {
       params.add('precip_1h:mm');
@@ -114,7 +114,7 @@ class NetworkServiceImpl implements NetworkService {
         windSpeedHeight: 100,
         windGustsHeight: 100,
         windDirectionHeight: 100,
-        temperatureHeight: 100,
+        temperature: true,
         precipitation: true,
         weatherSymbol: true,
         sunrise: true,

@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
+import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
-import 'package:forecast_app/interfaces/common_info.dart';
 import 'package:forecast_app/services/interfaces/network_service.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:meta/meta.dart';
 
-part 'weather_bloc.g.dart';
+part 'common_bloc.g.dart';
 part 'common_event.dart';
 part 'common_state.dart';
 
@@ -15,12 +15,15 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
   final NetworkService _networkService = locator<NetworkService>();
   final WeatherCubit _weatherCubit;
   final SunCubit _sunCubit;
+  final TemperatureCubit _temperatureCubit;
 
   CommonBloc({
     required WeatherCubit weatherCubit,
     required SunCubit sunCubit,
-  })   : _weatherCubit = weatherCubit,
+    required TemperatureCubit temperatureCubit,
+  })  : _weatherCubit = weatherCubit,
         _sunCubit = sunCubit,
+        _temperatureCubit = temperatureCubit,
         super(const CommonState()) {
     on<FetchAll>(_onWeatherFetch);
   }
@@ -44,6 +47,8 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         sunrise: result.getValueByParameter('sunrise:sql'),
         sunset: result.getValueByParameter('sunset:sql'),
       );
+
+      _temperatureCubit.onValue(result.getValueByParameter('t_0m:C'));
 
       emit(state.copyWith(
         isFetching: false,
