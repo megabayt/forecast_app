@@ -42,16 +42,16 @@ class TemperatureState {
 
   final double _min;
   double get min {
-    return convertToUnit(_min, TemperatureUnit.celsius, unit);
+    return convertToUnit(_min, TemperatureUnit.celsius, unit).floorToDouble();
   }
 
   final double _max;
   double get max {
-    return convertToUnit(_max, TemperatureUnit.celsius, unit);
+    return convertToUnit(_max, TemperatureUnit.celsius, unit).floorToDouble();
   }
 
   final double _value;
   double get value {
-    return convertToUnit(_value, TemperatureUnit.celsius, unit);
+    return convertToUnit(_value, TemperatureUnit.celsius, unit).floorToDouble();
   }
 }

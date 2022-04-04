@@ -72,7 +72,7 @@ class NetworkServiceImpl implements NetworkService {
       params.add('wind_gusts_${windGustsHeight}m:ms');
     }
     if (temperature != null && temperature) {
-      params.add('t_0m:C');
+      params.add('t_2m:C');
     }
     if (precipitation != null && precipitation) {
       params.add('precip_1h:mm');

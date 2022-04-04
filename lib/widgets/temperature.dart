@@ -14,8 +14,7 @@ class Temperature extends StatelessWidget {
       builder: (commonBlocContext, commonBlocState) {
         return BlocBuilder<TemperatureCubit, TemperatureState>(
           builder: (temperatureCubitContext, temperatureCubitState) {
-            var temperatureString =
-                temperatureCubitState.value?.toString() ?? '';
+            var temperatureString = temperatureCubitState.value.toString();
             temperatureString +=
                 '°${temperatureCubitState.unit == TemperatureUnit.celsius ? 'C' : 'F'}';
 

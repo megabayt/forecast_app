@@ -37,7 +37,7 @@ class TemperatureBottomSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: SfSlider(
-                    value: temperatureCubitState.min ?? 0,
+                    value: temperatureCubitState.min,
                     min: convertToUnit(-50, TemperatureUnit.celsius,
                         temperatureCubitState.unit),
                     max: convertToUnit(50, TemperatureUnit.celsius,
@@ -50,7 +50,7 @@ class TemperatureBottomSheet extends StatelessWidget {
                     },
                   ),
                 ),
-                Text((temperatureCubitState.min ?? 0)
+                Text((temperatureCubitState.min)
                         .floor()
                         .toString()
                         .padLeft(3, ' ') +
@@ -70,7 +70,7 @@ class TemperatureBottomSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: SfSlider(
-                    value: temperatureCubitState.max ?? 0,
+                    value: temperatureCubitState.max,
                     min: convertToUnit(-50, TemperatureUnit.celsius,
                         temperatureCubitState.unit),
                     max: convertToUnit(50, TemperatureUnit.celsius,
@@ -83,7 +83,7 @@ class TemperatureBottomSheet extends StatelessWidget {
                     },
                   ),
                 ),
-                Text((temperatureCubitState.max ?? 0)
+                Text((temperatureCubitState.max)
                         .floor()
                         .toString()
                         .padLeft(3, ' ') +

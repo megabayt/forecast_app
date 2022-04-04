@@ -7,36 +7,48 @@ import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
 import 'package:forecast_app/widgets/conditions.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final storage = await HydratedStorage.build(
+    storageDirectory: kIsWeb
+        ? HydratedStorage.webStorageDirectory
+        : await getTemporaryDirectory(),
+  );
   await dotenv.load(fileName: ".env");
   setupServiceLocator();
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => WeatherCubit(),
-          lazy: false,
-        ),
-        BlocProvider(
-          create: (_) => SunCubit(),
-          lazy: false,
-        ),
-        BlocProvider(
-        create: (_) => TemperatureCubit(),
-          lazy: false,
-        ),
-        BlocProvider(
-          create: (context) => CommonBloc(
-            weatherCubit: BlocProvider.of<WeatherCubit>(context),
-            sunCubit: BlocProvider.of<SunCubit>(context),
-            temperatureCubit: BlocProvider.of<TemperatureCubit>(context),
-          )..add(FetchAll()),
-          lazy: false,
-        ),
-      ],
-      child: const MyApp(),
+  HydratedBlocOverrides.runZoned(
+    () => runApp(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => WeatherCubit(),
+            lazy: false,
+          ),
+          BlocProvider(
+            create: (_) => SunCubit(),
+            lazy: false,
+          ),
+          BlocProvider(
+            create: (_) => TemperatureCubit(),
+            lazy: false,
+          ),
+          BlocProvider(
+            create: (context) => CommonBloc(
+              weatherCubit: BlocProvider.of<WeatherCubit>(context),
+              sunCubit: BlocProvider.of<SunCubit>(context),
+              temperatureCubit: BlocProvider.of<TemperatureCubit>(context),
+            )..add(FetchAll()),
+            lazy: false,
+          ),
+        ],
+        child: const MyApp(),
+      ),
     ),
+    storage: storage,
   );
 }
 

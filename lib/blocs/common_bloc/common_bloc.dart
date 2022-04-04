@@ -48,7 +48,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         sunset: result.getValueByParameter('sunset:sql'),
       );
 
-      _temperatureCubit.onValue(result.getValueByParameter('t_0m:C'));
+      _temperatureCubit.onValue(result.getValueByParameter('t_2m:C'));
 
       emit(state.copyWith(
         isFetching: false,
