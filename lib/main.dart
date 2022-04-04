@@ -23,7 +23,7 @@ Future main() async {
           lazy: false,
         ),
         BlocProvider(
-          create: (_) => TemperatureCubit(),
+        create: (_) => TemperatureCubit(),
           lazy: false,
         ),
         BlocProvider(

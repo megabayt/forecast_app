@@ -1,40 +1,46 @@
 import 'package:bloc/bloc.dart';
-import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:forecast_app/enums/temperature_unit.dart';
+import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
 
 part 'temperature_state.dart';
-part 'temperature_cubit.g.dart';
 
 class TemperatureCubit extends Cubit<TemperatureState> {
   TemperatureCubit() : super(const TemperatureState());
 
-  onValue(double? newValue) {
+  onValue(double newValue) {
     emit(state.copyWith(
       value: newValue,
     ));
   }
 
-  onChangeUnit(Unit newUnit) {
+  onChangeUnit(TemperatureUnit newUnit) {
     emit(state.copyWith(
       unit: newUnit,
     ));
   }
 
-  onChangeHeight(int? newHeight) {
+  onChangeMin(double newMin) {
     emit(state.copyWith(
-      height: newHeight,
+      min: newMin >= state.max ? state.max : newMin,
     ));
   }
 
-  onChangeMin(int? newMin) {
+  onToggleMin() {
     emit(state.copyWith(
-      min: newMin,
+      minOn: !state.minOn,
     ));
   }
 
-  onChangeMax(int? newMax) {
+  onChangeMax(double newMax) {
     emit(state.copyWith(
-      max: newMax,
+      max: newMax <= state.min ? state.min : newMax,
+    ));
+  }
+
+  onToggleMax() {
+    emit(state.copyWith(
+      maxOn: !state.maxOn,
     ));
   }
 }
