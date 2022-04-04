@@ -1,14 +1,12 @@
-part of 'weather_bloc.dart';
+part of 'common_bloc.dart';
 
 @immutable
 @CopyWith()
-class WeatherState {
-  final WeatherInfo? data;
+class CommonState {
   final bool isFetching;
   final String error;
 
-  const WeatherState({
-    this.data,
+  const CommonState({
     this.isFetching = false,
     this.error = '',
   });

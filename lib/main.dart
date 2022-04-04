@@ -1,16 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forecast_app/blocs/bloc/weather_bloc.dart';
+import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
+import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
+import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
 import 'package:forecast_app/widgets/conditions.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 Future main() async {
   await dotenv.load(fileName: ".env");
   setupServiceLocator();
   runApp(
-    BlocProvider(
-      create: (_) => WeatherBloc()..add(WeatherFetch()),
-      lazy: false,
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => WeatherCubit(),
+          lazy: false,
+        ),
+        BlocProvider(
+          create: (_) => SunCubit(),
+          lazy: false,
+        ),
+        BlocProvider(
+          create: (context) => CommonBloc(
+            weatherCubit: BlocProvider.of<WeatherCubit>(context),
+            sunCubit: BlocProvider.of<SunCubit>(context),
+          )..add(FetchAll()),
+          lazy: false,
+        ),
+      ],
       child: const MyApp(),
     ),
   );

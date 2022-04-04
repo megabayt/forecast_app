@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:forecast_app/interfaces/weather_info.dart';
-import 'package:forecast_app/services/interfaces/weather_service.dart';
+import 'package:forecast_app/interfaces/common_info.dart';
+import 'package:forecast_app/services/interfaces/network_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class WeatherServiceImpl implements WeatherService {
+class NetworkServiceImpl implements NetworkService {
   /// Determine the current position of the device.
   ///
   /// When the location services are not enabled or permissions
@@ -93,7 +93,7 @@ class WeatherServiceImpl implements WeatherService {
   }
 
   @override
-  Future<WeatherInfo> getWeatherInfo() async {
+  Future<CommonInfo> getCommonInfo() async {
     final login = dotenv.env['LOGIN'];
     final password = dotenv.env['PASSWORD'];
     final base64Str = base64Encode(utf8.encode('$login:$password'));
@@ -130,9 +130,9 @@ class WeatherServiceImpl implements WeatherService {
 
       Map<String, dynamic> responseBody = json.decode(response.body);
 
-      return WeatherInfo.fromJson(responseBody);
+      return CommonInfo.fromJson(responseBody);
     } catch (e) {
-      return WeatherInfo.fromJson({});
+      return CommonInfo.fromJson({});
     }
   }
 }
