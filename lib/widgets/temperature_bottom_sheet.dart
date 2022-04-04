@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
+import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/enums/temperature_unit.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -38,10 +40,10 @@ class TemperatureBottomSheet extends StatelessWidget {
                 Expanded(
                   child: SfSlider(
                     value: temperatureCubitState.min,
-                    min: convertToUnit(-50, TemperatureUnit.celsius,
-                        temperatureCubitState.unit),
-                    max: convertToUnit(50, TemperatureUnit.celsius,
-                        temperatureCubitState.unit),
+                    min: convertToTemperatureUnit(-50, TemperatureUnit.celsius,
+                        temperatureCubitState.temperatureUnit),
+                    max: convertToTemperatureUnit(50, TemperatureUnit.celsius,
+                        temperatureCubitState.temperatureUnit),
                     showLabels: true,
                     onChanged: (newValue) {
                       context.read<TemperatureCubit>().onChangeMin(
@@ -54,7 +56,7 @@ class TemperatureBottomSheet extends StatelessWidget {
                         .floor()
                         .toString()
                         .padLeft(3, ' ') +
-                    ' ${temperatureCubitState.unit == TemperatureUnit.celsius ? 'C' : 'F'}'),
+                    ' ${temperatureCubitState.temperatureUnit == TemperatureUnit.celsius ? 'C' : 'F'}'),
               ],
             ),
           ),
@@ -71,10 +73,10 @@ class TemperatureBottomSheet extends StatelessWidget {
                 Expanded(
                   child: SfSlider(
                     value: temperatureCubitState.max,
-                    min: convertToUnit(-50, TemperatureUnit.celsius,
-                        temperatureCubitState.unit),
-                    max: convertToUnit(50, TemperatureUnit.celsius,
-                        temperatureCubitState.unit),
+                    min: convertToTemperatureUnit(-50, TemperatureUnit.celsius,
+                        temperatureCubitState.temperatureUnit),
+                    max: convertToTemperatureUnit(50, TemperatureUnit.celsius,
+                        temperatureCubitState.temperatureUnit),
                     showLabels: true,
                     onChanged: (newValue) {
                       context.read<TemperatureCubit>().onChangeMax(
@@ -87,7 +89,40 @@ class TemperatureBottomSheet extends StatelessWidget {
                         .floor()
                         .toString()
                         .padLeft(3, ' ') +
-                    ' ${temperatureCubitState.unit == TemperatureUnit.celsius ? 'C' : 'F'}'),
+                    ' ${temperatureCubitState.temperatureUnit == TemperatureUnit.celsius ? 'C' : 'F'}'),
+              ],
+            ),
+          ),
+          const ListTile(
+            title: Text('Высота'),
+          ),
+          ListTile(
+            title: Row(
+              children: [
+                Expanded(
+                  child: SfSlider(
+                    value: temperatureCubitState.height,
+                    min: convertToDistanceUnit(0, DistanceUnit.meters,
+                            temperatureCubitState.distanceUnit)
+                        .floorToDouble(),
+                    max: convertToDistanceUnit(5000, DistanceUnit.meters,
+                            temperatureCubitState.distanceUnit)
+                        .floorToDouble(),
+                    showLabels: true,
+                    onChanged: (newValue) {
+                      context.read<CommonBloc>().add(FetchAll());
+                      context.read<TemperatureCubit>().onChangeHeight(
+                            newValue,
+                          );
+                    },
+                  ),
+                ),
+                Text((temperatureCubitState.height)
+                        .floor()
+                        .toString()
+                        .padLeft(5, ' ') +
+                    ' ${temperatureCubitState.distanceUnit == DistanceUnit.meters ? 'm' : 'feet'}'
+                        .padLeft(5, ' ')),
               ],
             ),
           ),
@@ -110,18 +145,45 @@ class TemperatureBottomSheet extends StatelessWidget {
               constraints: BoxConstraints(
                   minWidth: (MediaQuery.of(context).size.width - 36) / 2),
               isSelected: [
-                temperatureCubitState.unit == TemperatureUnit.celsius,
-                temperatureCubitState.unit == TemperatureUnit.farenheight,
+                temperatureCubitState.temperatureUnit ==
+                    TemperatureUnit.celsius,
+                temperatureCubitState.temperatureUnit ==
+                    TemperatureUnit.farenheight,
               ],
               onPressed: (index) {
-                context.read<TemperatureCubit>().onChangeUnit(
+                context.read<TemperatureCubit>().onChangeTemperatureUnit(
                       index == 0
                           ? TemperatureUnit.celsius
                           : TemperatureUnit.farenheight,
                     );
               },
             ),
-          )
+          ),
+          ListTile(
+            title: ToggleButtons(
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text('m'),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text('feet'),
+                ),
+              ],
+              constraints: BoxConstraints(
+                  minWidth: (MediaQuery.of(context).size.width - 36) / 2),
+              isSelected: [
+                temperatureCubitState.distanceUnit == DistanceUnit.meters,
+                temperatureCubitState.distanceUnit == DistanceUnit.feet,
+              ],
+              onPressed: (index) {
+                context.read<TemperatureCubit>().onChangeDistanceUnit(
+                      index == 0 ? DistanceUnit.meters : DistanceUnit.feet,
+                    );
+              },
+            ),
+          ),
         ],
       );
     });

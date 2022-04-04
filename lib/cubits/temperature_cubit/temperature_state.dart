@@ -3,55 +3,81 @@ part of 'temperature_cubit.dart';
 @immutable
 class TemperatureState {
   const TemperatureState({
-    this.unit = TemperatureUnit.celsius,
+    this.temperatureUnit = TemperatureUnit.celsius,
+    this.distanceUnit = DistanceUnit.meters,
     this.minOn = true,
     this.maxOn = true,
+    double height = -30,
     double min = -30,
     double max = 30,
     double value = 0,
   })  : _value = value,
+        _height = height,
         _min = min,
         _max = max;
 
   TemperatureState copyWith({
-    TemperatureUnit? unit,
+    TemperatureUnit? temperatureUnit,
+    DistanceUnit? distanceUnit,
     bool? minOn,
     bool? maxOn,
+    double? height,
     double? min,
     double? max,
     double? value,
   }) =>
       TemperatureState(
-        unit: unit ?? this.unit,
+        temperatureUnit: temperatureUnit ?? this.temperatureUnit,
+        distanceUnit: distanceUnit ?? this.distanceUnit,
         minOn: minOn ?? this.minOn,
         maxOn: maxOn ?? this.maxOn,
+        height: height != null
+            ? convertToDistanceUnit(
+                height, this.distanceUnit, DistanceUnit.meters)
+            : _height,
         min: min != null
-            ? convertToUnit(min, this.unit, TemperatureUnit.celsius)
+            ? convertToTemperatureUnit(
+                min, this.temperatureUnit, TemperatureUnit.celsius)
             : _min,
         max: max != null
-            ? convertToUnit(max, this.unit, TemperatureUnit.celsius)
+            ? convertToTemperatureUnit(
+                max, this.temperatureUnit, TemperatureUnit.celsius)
             : _max,
         value: value != null
-            ? convertToUnit(value, this.unit, TemperatureUnit.celsius)
+            ? convertToTemperatureUnit(
+                value, this.temperatureUnit, TemperatureUnit.celsius)
             : _value,
       );
 
-  final TemperatureUnit unit;
+  final TemperatureUnit temperatureUnit;
+  final DistanceUnit distanceUnit;
   final bool minOn;
   final bool maxOn;
 
+  final double _height;
+  double get height {
+    return convertToDistanceUnit(_height, DistanceUnit.meters, distanceUnit)
+        .floorToDouble();
+  }
+
   final double _min;
   double get min {
-    return convertToUnit(_min, TemperatureUnit.celsius, unit).floorToDouble();
+    return convertToTemperatureUnit(
+            _min, TemperatureUnit.celsius, temperatureUnit)
+        .floorToDouble();
   }
 
   final double _max;
   double get max {
-    return convertToUnit(_max, TemperatureUnit.celsius, unit).floorToDouble();
+    return convertToTemperatureUnit(
+            _max, TemperatureUnit.celsius, temperatureUnit)
+        .floorToDouble();
   }
 
   final double _value;
   double get value {
-    return convertToUnit(_value, TemperatureUnit.celsius, unit).floorToDouble();
+    return convertToTemperatureUnit(
+            _value, TemperatureUnit.celsius, temperatureUnit)
+        .floorToDouble();
   }
 }

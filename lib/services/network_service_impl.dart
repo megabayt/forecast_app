@@ -54,7 +54,7 @@ class NetworkServiceImpl implements NetworkService {
     int? windSpeedHeight,
     int? windGustsHeight,
     int? windDirectionHeight,
-    bool? temperature,
+    int? temperatureHeight,
     bool? precipitation,
     bool? weatherSymbol,
     bool? sunrise,
@@ -71,8 +71,8 @@ class NetworkServiceImpl implements NetworkService {
     if (windGustsHeight != null) {
       params.add('wind_gusts_${windGustsHeight}m:ms');
     }
-    if (temperature != null && temperature) {
-      params.add('t_2m:C');
+    if (temperatureHeight != null) {
+      params.add('t_${temperatureHeight}m:C');
     }
     if (precipitation != null && precipitation) {
       params.add('precip_1h:mm');
@@ -93,7 +93,16 @@ class NetworkServiceImpl implements NetworkService {
   }
 
   @override
-  Future<CommonInfo> getCommonInfo() async {
+  Future<CommonInfo> getCommonInfo({
+    int? temperatureHeight,
+    int? windSpeedHeight,
+    int? windGustsHeight,
+    int? windDirectionHeight,
+    bool? precipitation,
+    bool? weatherSymbol,
+    bool? sunrise,
+    bool? sunset,
+  }) async {
     final login = dotenv.env['LOGIN'];
     final password = dotenv.env['PASSWORD'];
     final base64Str = base64Encode(utf8.encode('$login:$password'));
@@ -111,14 +120,14 @@ class NetworkServiceImpl implements NetworkService {
         timestamp: timestamp,
         latitude: position.latitude,
         longitude: position.longitude,
-        windSpeedHeight: 100,
-        windGustsHeight: 100,
-        windDirectionHeight: 100,
-        temperature: true,
-        precipitation: true,
-        weatherSymbol: true,
-        sunrise: true,
-        sunset: true,
+        windSpeedHeight: windSpeedHeight,
+        windGustsHeight: windGustsHeight,
+        windDirectionHeight: windDirectionHeight,
+        temperatureHeight: temperatureHeight,
+        precipitation: precipitation,
+        weatherSymbol: weatherSymbol,
+        sunrise: sunrise,
+        sunset: sunset,
       );
 
       final response = await http.get(

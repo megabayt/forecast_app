@@ -16,12 +16,13 @@ class Temperature extends StatelessWidget {
           builder: (temperatureCubitContext, temperatureCubitState) {
             var temperatureString = temperatureCubitState.value.toString();
             temperatureString +=
-                '°${temperatureCubitState.unit == TemperatureUnit.celsius ? 'C' : 'F'}';
+                '°${temperatureCubitState.temperatureUnit == TemperatureUnit.celsius ? 'C' : 'F'}';
 
             return GestureDetector(
               onTap: () {
                 showModalBottomSheet(
                   context: context,
+                  isScrollControlled: true,
                   builder: (_) {
                     return const TemperatureBottomSheet();
                   },

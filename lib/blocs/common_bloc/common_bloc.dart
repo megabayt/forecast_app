@@ -6,6 +6,7 @@ import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
 import 'package:forecast_app/services/interfaces/network_service.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:meta/meta.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 part 'common_bloc.g.dart';
 part 'common_event.dart';
@@ -25,7 +26,10 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         _sunCubit = sunCubit,
         _temperatureCubit = temperatureCubit,
         super(const CommonState()) {
-    on<FetchAll>(_onWeatherFetch);
+    on<FetchAll>(
+      _onWeatherFetch,
+      transformer: debounce(const Duration(milliseconds: 500)),
+    );
   }
 
   void _onWeatherFetch(
@@ -38,26 +42,43 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     ));
 
     try {
-      final result = await _networkService.getCommonInfo();
-
-      _weatherCubit
-          .onValue(result.getValueByParameter('weather_symbol_30min:idx'));
-
-      _sunCubit.onValue(
-        sunrise: result.getValueByParameter('sunrise:sql'),
-        sunset: result.getValueByParameter('sunset:sql'),
+      final result = await _networkService.getCommonInfo(
+        weatherSymbol: true,
+        sunrise: true,
+        sunset: true,
+        temperatureHeight: _temperatureCubit.state.height.floor(),
       );
 
-      _temperatureCubit.onValue(result.getValueByParameter('t_2m:C'));
+      final weatherSymbol =
+          result.getValueByParameter('weather_symbol_30min:idx');
+      if (weatherSymbol != null) {
+        _weatherCubit.onValue(weatherSymbol);
+      }
 
-      emit(state.copyWith(
-        isFetching: false,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isFetching: false,
-        error: e.toString(),
-      ));
-    }
+      final sunrise = result.getValueByParameter('sunrise:sql');
+      final sunset = result.getValueByParameter('sunset:sql');
+      if (sunrise != null && sunset != null) {
+        _sunCubit.onValue(
+          sunrise: sunrise,
+          sunset: sunset,
+        );
+      }
+
+      final temperature = result.getValueByParameter(
+          't_${_temperatureCubit.state.height.floor()}m:C');
+      if (temperature != null) {
+        _temperatureCubit.onValue(temperature);
+      }
+    } catch (_) {}
+    emit(state.copyWith(
+      isFetching: false,
+    ));
   }
+}
+
+//Debounce query requests
+EventTransformer<E> debounce<E>(Duration duration) {
+  return (events, mapper) {
+    return events.debounce(duration).switchMap(mapper);
+  };
 }
