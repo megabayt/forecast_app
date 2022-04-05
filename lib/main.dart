@@ -4,7 +4,8 @@ import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
-import 'package:forecast_app/widgets/conditions.dart';
+import 'package:forecast_app/screens/conditions.dart';
+import 'package:forecast_app/screens/settings.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -81,15 +82,18 @@ class _MainWidgetState extends State<MainWidget> {
     SizedBox(),
     SizedBox(),
     SizedBox(),
-    SizedBox(),
+    Settings(),
     SizedBox(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  void Function(int) _onItemTapped(BuildContext context) => (int index) {
+        if (_selectedIndex != index) {
+          BlocProvider.of<CommonBloc>(context).add(FetchAll());
+        }
+        setState(() {
+          _selectedIndex = index;
+        });
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +134,7 @@ class _MainWidgetState extends State<MainWidget> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.teal[100],
         unselectedItemColor: Colors.black,
-        onTap: _onItemTapped,
+        onTap: _onItemTapped(context),
       ),
     );
   }
