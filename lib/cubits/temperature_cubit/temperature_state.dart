@@ -60,7 +60,6 @@ class TemperatureState {
   final double _value;
   double get value {
     return convertToTemperatureUnit(
-            _value, TemperatureUnit.celsius, temperatureUnit)
-        .floorToDouble();
+        _value, TemperatureUnit.celsius, temperatureUnit);
   }
 }

@@ -51,41 +51,18 @@ class NetworkServiceImpl implements NetworkService {
     required String timestamp,
     required double latitude,
     required double longitude,
-    int? windSpeedHeight,
-    int? windGustsHeight,
-    int? windDirectionHeight,
-    int? temperatureHeight,
-    bool? precipitation,
-    bool? weatherSymbol,
-    bool? sunrise,
-    bool? sunset,
+    required int height,
   }) {
     final params = [];
 
-    if (windSpeedHeight != null) {
-      params.add('wind_speed_${windSpeedHeight}m:ms');
-    }
-    if (windDirectionHeight != null) {
-      params.add('wind_dir_${windDirectionHeight}m:d');
-    }
-    if (windGustsHeight != null) {
-      params.add('wind_gusts_${windGustsHeight}m:ms');
-    }
-    if (temperatureHeight != null) {
-      params.add('t_${temperatureHeight}m:C');
-    }
-    if (precipitation != null && precipitation) {
-      params.add('precip_1h:mm');
-    }
-    if (weatherSymbol != null && weatherSymbol) {
-      params.add('weather_symbol_30min:idx');
-    }
-    if (sunrise != null && sunrise) {
-      params.add('sunrise:sql');
-    }
-    if (sunset != null && sunset) {
-      params.add('sunset:sql');
-    }
+    params.add('wind_speed_${height}m:ms');
+    params.add('wind_dir_${height}m:d');
+    params.add('wind_gusts_${height}m:ms');
+    params.add('t_${height}m:C');
+    params.add('precip_1h:mm');
+    params.add('weather_symbol_30min:idx');
+    params.add('sunrise:sql');
+    params.add('sunset:sql');
 
     final paramsStr = params.join(',');
 
@@ -94,14 +71,7 @@ class NetworkServiceImpl implements NetworkService {
 
   @override
   Future<CommonInfo> getCommonInfo({
-    int? temperatureHeight,
-    int? windSpeedHeight,
-    int? windGustsHeight,
-    int? windDirectionHeight,
-    bool? precipitation,
-    bool? weatherSymbol,
-    bool? sunrise,
-    bool? sunset,
+    required int height,
   }) async {
     final login = dotenv.env['LOGIN'];
     final password = dotenv.env['PASSWORD'];
@@ -120,14 +90,7 @@ class NetworkServiceImpl implements NetworkService {
         timestamp: timestamp,
         latitude: position.latitude,
         longitude: position.longitude,
-        windSpeedHeight: windSpeedHeight,
-        windGustsHeight: windGustsHeight,
-        windDirectionHeight: windDirectionHeight,
-        temperatureHeight: temperatureHeight,
-        precipitation: precipitation,
-        weatherSymbol: weatherSymbol,
-        sunrise: sunrise,
-        sunset: sunset,
+        height: height,
       );
 
       final response = await http.get(

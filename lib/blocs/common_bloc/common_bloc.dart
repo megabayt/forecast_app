@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
+import 'package:forecast_app/cubits/cubit/wind_cubit.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
@@ -18,16 +19,19 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
   final WeatherCubit _weatherCubit;
   final SunCubit _sunCubit;
   final TemperatureCubit _temperatureCubit;
+  final WindCubit _windCubit;
   final CommonSettingsCubit _commonSettingsCubit;
 
   CommonBloc({
     required WeatherCubit weatherCubit,
     required SunCubit sunCubit,
+    required WindCubit windCubit,
     required TemperatureCubit temperatureCubit,
     required CommonSettingsCubit commonSettingsCubit,
   })  : _weatherCubit = weatherCubit,
         _sunCubit = sunCubit,
         _temperatureCubit = temperatureCubit,
+        _windCubit = windCubit,
         _commonSettingsCubit = commonSettingsCubit,
         super(const CommonState()) {
     on<FetchAll>(
@@ -47,10 +51,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
 
     try {
       final result = await _networkService.getCommonInfo(
-        weatherSymbol: true,
-        sunrise: true,
-        sunset: true,
-        temperatureHeight: _commonSettingsCubit.state.height.floor(),
+        height: _commonSettingsCubit.state.height.floor(),
       );
 
       final weatherSymbol =
@@ -72,6 +73,12 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
           't_${_commonSettingsCubit.state.height.floor()}m:C');
       if (temperature != null) {
         _temperatureCubit.onValue(temperature);
+      }
+
+      final windSpeed = result.getValueByParameter(
+          'wind_speed_${_commonSettingsCubit.state.height.floor()}m:ms');
+      if (windSpeed != null) {
+        _windCubit.onValue(windSpeed);
       }
     } catch (_) {}
     emit(state.copyWith(
