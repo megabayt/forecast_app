@@ -93,7 +93,7 @@ const speedUnitLabels = {
   SpeedUnit.ms: 'м/с',
   SpeedUnit.mph: 'mph',
   SpeedUnit.knots: 'узлов',
-  SpeedUnit.bft: '',
+  SpeedUnit.bft: 'bft',
 };
 String getSpeedUnitLabel(SpeedUnit speedUnit) {
   return speedUnitLabels[speedUnit] ?? '';

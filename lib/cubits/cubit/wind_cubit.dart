@@ -8,9 +8,9 @@ part 'wind_state.dart';
 class WindCubit extends HydratedCubit<WindState> {
   WindCubit() : super(const WindState());
 
-  onValue(double newValue) {
+  onChangeSpeed(double newValue) {
     emit(state.copyWith(
-      value: convertToSpeedUnit(newValue, SpeedUnit.ms, state.speedUnit),
+      speed: convertToSpeedUnit(newValue, SpeedUnit.ms, state.speedUnit),
     ));
   }
 
@@ -20,15 +20,40 @@ class WindCubit extends HydratedCubit<WindState> {
     ));
   }
 
+  onToggleGusts() {
+    emit(state.copyWith(
+      gustsOn: !state.gustsOn,
+    ));
+  }
+
+
+  onChangeMax(double newMax) {
+    emit(state.copyWith(
+      max: newMax,
+    ));
+  }
+
+  onToggleMax() {
+    emit(state.copyWith(
+      maxOn: !state.maxOn,
+    ));
+  }
+  
   @override
   WindState fromJson(Map<String, dynamic> json) => WindState(
         speedUnit: SpeedUnit.values.elementAt(json['SpeedUnit']),
-        value: json['value'],
+        speed: json['speed'],
+        gustsOn: json['gustsOn'],
+        maxOn: json['maxOn'],
+        max: json['max'],
       );
 
   @override
   Map<String, dynamic> toJson(WindState state) => {
         'SpeedUnit': state.speedUnit.index,
-        'value': state._value,
+        'speed': state._speed,
+        'gustsOn': state.gustsOn,
+        'maxOn': state.maxOn,
+        'max': state._max,
       };
 }
