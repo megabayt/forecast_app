@@ -14,6 +14,12 @@ class WindCubit extends HydratedCubit<WindState> {
     ));
   }
 
+  onChangeGusts(double newValue) {
+    emit(state.copyWith(
+      gusts: convertToSpeedUnit(newValue, SpeedUnit.ms, state.speedUnit),
+    ));
+  }
+
   onChangeSpeedUnit(SpeedUnit newUnit) {
     emit(state.copyWith(
       speedUnit: newUnit,
@@ -43,6 +49,7 @@ class WindCubit extends HydratedCubit<WindState> {
   WindState fromJson(Map<String, dynamic> json) => WindState(
         speedUnit: SpeedUnit.values.elementAt(json['SpeedUnit']),
         speed: json['speed'],
+        gusts: json['gusts'],
         gustsOn: json['gustsOn'],
         maxOn: json['maxOn'],
         max: json['max'],
@@ -52,6 +59,7 @@ class WindCubit extends HydratedCubit<WindState> {
   Map<String, dynamic> toJson(WindState state) => {
         'SpeedUnit': state.speedUnit.index,
         'speed': state._speed,
+        'gusts': state._gusts,
         'gustsOn': state.gustsOn,
         'maxOn': state.maxOn,
         'max': state._max,

@@ -80,6 +80,12 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
       if (windSpeed != null) {
         _windCubit.onChangeSpeed(windSpeed);
       }
+
+      final windGusts = result.getValueByParameter(
+          'wind_gusts_${_commonSettingsCubit.state.height.floor()}m:ms');
+      if (windGusts != null) {
+        _windCubit.onChangeGusts(windGusts);
+      }
     } catch (_) {}
     emit(state.copyWith(
       isFetching: false,
