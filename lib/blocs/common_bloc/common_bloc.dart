@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
@@ -17,14 +18,17 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
   final WeatherCubit _weatherCubit;
   final SunCubit _sunCubit;
   final TemperatureCubit _temperatureCubit;
+  final CommonSettingsCubit _commonSettingsCubit;
 
   CommonBloc({
     required WeatherCubit weatherCubit,
     required SunCubit sunCubit,
     required TemperatureCubit temperatureCubit,
+    required CommonSettingsCubit commonSettingsCubit,
   })  : _weatherCubit = weatherCubit,
         _sunCubit = sunCubit,
         _temperatureCubit = temperatureCubit,
+        _commonSettingsCubit = commonSettingsCubit,
         super(const CommonState()) {
     on<FetchAll>(
       _onWeatherFetch,
@@ -46,7 +50,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         weatherSymbol: true,
         sunrise: true,
         sunset: true,
-        temperatureHeight: _temperatureCubit.state.height.floor(),
+        temperatureHeight: _commonSettingsCubit.state.height.floor(),
       );
 
       final weatherSymbol =
@@ -65,7 +69,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
       }
 
       final temperature = result.getValueByParameter(
-          't_${_temperatureCubit.state.height.floor()}m:C');
+          't_${_commonSettingsCubit.state.height.floor()}m:C');
       if (temperature != null) {
         _temperatureCubit.onValue(temperature);
       }
