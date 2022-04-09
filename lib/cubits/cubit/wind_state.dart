@@ -3,6 +3,7 @@ part of 'wind_cubit.dart';
 @immutable
 class WindState {
   const WindState({
+    this.direction = 0,
     this.speedUnit = SpeedUnit.ms,
     double speed = 0,
     double gusts = 0,
@@ -14,6 +15,7 @@ class WindState {
         _max = max;
 
   WindState copyWith({
+    double? direction,
     SpeedUnit? speedUnit,
     double? speed,
     double? gusts,
@@ -22,6 +24,7 @@ class WindState {
     double? max,
   }) =>
       WindState(
+        direction: direction ?? this.direction,
         speedUnit: speedUnit ?? this.speedUnit,
         speed: speed != null
             ? convertToSpeedUnit(speed, this.speedUnit, SpeedUnit.ms)
@@ -36,6 +39,7 @@ class WindState {
             : _max,
       );
 
+  final double direction;
   final SpeedUnit speedUnit;
   final double _speed;
   double get speed {

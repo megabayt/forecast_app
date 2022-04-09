@@ -86,6 +86,12 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
       if (windGusts != null) {
         _windCubit.onChangeGusts(windGusts);
       }
+
+      final windDirection = result.getValueByParameter(
+          'wind_dir_${_commonSettingsCubit.state.height.floor()}m:d');
+      if (windDirection != null) {
+        _windCubit.onChangeDirection(windDirection);
+      }
     } catch (_) {}
     emit(state.copyWith(
       isFetching: false,

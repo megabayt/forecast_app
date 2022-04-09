@@ -8,6 +8,12 @@ part 'wind_state.dart';
 class WindCubit extends HydratedCubit<WindState> {
   WindCubit() : super(const WindState());
 
+  onChangeDirection(double newValue) {
+    emit(state.copyWith(
+      direction: newValue,
+    ));
+  }
+
   onChangeSpeed(double newValue) {
     emit(state.copyWith(
       speed: convertToSpeedUnit(newValue, SpeedUnit.ms, state.speedUnit),
@@ -47,6 +53,7 @@ class WindCubit extends HydratedCubit<WindState> {
   
   @override
   WindState fromJson(Map<String, dynamic> json) => WindState(
+        direction: json['direction'],
         speedUnit: SpeedUnit.values.elementAt(json['SpeedUnit']),
         speed: json['speed'],
         gusts: json['gusts'],
@@ -57,6 +64,7 @@ class WindCubit extends HydratedCubit<WindState> {
 
   @override
   Map<String, dynamic> toJson(WindState state) => {
+        'direction': state.direction,
         'SpeedUnit': state.speedUnit.index,
         'speed': state._speed,
         'gusts': state._gusts,
