@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
-import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:forecast_app/widgets/wind_bottom_sheet.dart';
 
@@ -25,9 +24,7 @@ class Gusts extends StatelessWidget {
                 heightString +=
                     commonSettingsCubitState.height.toStringAsFixed(0);
                 heightString +=
-                    commonSettingsCubitState.distanceUnit == DistanceUnit.feet
-                        ? ' feet'
-                        : ' m';
+                    getDistanceUnitLabel(commonSettingsCubitState.distanceUnit);
 
                 return GestureDetector(
                   onTap: () {

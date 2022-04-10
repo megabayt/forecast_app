@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
-import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/enums/temperature_unit.dart';
+import 'package:forecast_app/utils/helpers.dart';
 import 'package:forecast_app/widgets/temperature_bottom_sheet.dart';
 
 class Temperature extends StatelessWidget {
@@ -27,9 +27,7 @@ class Temperature extends StatelessWidget {
                 heightString +=
                     commonSettingsCubitState.height.toStringAsFixed(0);
                 heightString +=
-                    commonSettingsCubitState.distanceUnit == DistanceUnit.feet
-                        ? ' feet'
-                        : ' m';
+                    getDistanceUnitLabel(commonSettingsCubitState.distanceUnit);
 
                 return GestureDetector(
                   onTap: () {

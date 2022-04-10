@@ -3,10 +3,12 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
+import 'package:forecast_app/cubits/visibility_cubit/visibility_cubit.dart';
 import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
+import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/services/interfaces/network_service.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:meta/meta.dart';
@@ -24,6 +26,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
   final WindCubit _windCubit;
   final PrecipitationCubit _precipitationCubit;
   final CloudinessCubit _cloudinessCubit;
+  final VisibilityCubit _visibilityCubit;
   final CommonSettingsCubit _commonSettingsCubit;
 
   CommonBloc({
@@ -33,6 +36,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     required TemperatureCubit temperatureCubit,
     required PrecipitationCubit precipitationCubit,
     required CloudinessCubit cloudinessCubit,
+    required VisibilityCubit visibilityCubit,
     required CommonSettingsCubit commonSettingsCubit,
   })  : _weatherCubit = weatherCubit,
         _sunCubit = sunCubit,
@@ -40,6 +44,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         _windCubit = windCubit,
         _precipitationCubit = precipitationCubit,
         _cloudinessCubit = cloudinessCubit,
+        _visibilityCubit = visibilityCubit,
         _commonSettingsCubit = commonSettingsCubit,
         super(const CommonState()) {
     on<FetchAll>(
@@ -58,8 +63,15 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     ));
 
     try {
+      final height = _commonSettingsCubit.state.height.floor();
+      final distanceUnitStr =
+          _commonSettingsCubit.state.distanceUnit == DistanceUnit.meters
+              ? 'm'
+              : 'ft';
+
       final result = await _networkService.getCommonInfo(
-        height: _commonSettingsCubit.state.height.floor(),
+        height: height,
+        distanceUnit: distanceUnitStr,
       );
 
       final weatherSymbol =
@@ -77,26 +89,26 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         );
       }
 
-      final temperature = result.getValueByParameter(
-          't_${_commonSettingsCubit.state.height.floor()}m:C');
+      final temperature =
+          result.getValueByParameter('t_$height$distanceUnitStr:C');
       if (temperature != null) {
         _temperatureCubit.onValue(temperature);
       }
 
-      final windSpeed = result.getValueByParameter(
-          'wind_speed_${_commonSettingsCubit.state.height.floor()}m:ms');
+      final windSpeed =
+          result.getValueByParameter('wind_speed_$height$distanceUnitStr:ms');
       if (windSpeed != null) {
         _windCubit.onChangeSpeed(windSpeed);
       }
 
-      final windGusts = result.getValueByParameter(
-          'wind_gusts_${_commonSettingsCubit.state.height.floor()}m:ms');
+      final windGusts =
+          result.getValueByParameter('wind_gusts_$height$distanceUnitStr:ms');
       if (windGusts != null) {
         _windCubit.onChangeGusts(windGusts);
       }
 
-      final windDirection = result.getValueByParameter(
-          'wind_dir_${_commonSettingsCubit.state.height.floor()}m:d');
+      final windDirection =
+          result.getValueByParameter('wind_dir_$height$distanceUnitStr:d');
       if (windDirection != null) {
         _windCubit.onChangeDirection(windDirection);
       }
@@ -109,6 +121,12 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
       final cloudiness = result.getValueByParameter('total_cloud_cover:p');
       if (cloudiness != null) {
         _cloudinessCubit.onValue(cloudiness);
+      }
+
+      final visibility =
+          result.getValueByParameter('visibility:$distanceUnitStr');
+      if (visibility != null) {
+        _visibilityCubit.onValue(visibility);
       }
     } catch (_) {}
     emit(state.copyWith(

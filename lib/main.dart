@@ -4,6 +4,7 @@ import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
+import 'package:forecast_app/cubits/visibility_cubit/visibility_cubit.dart';
 import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
@@ -57,6 +58,14 @@ Future main() async {
             lazy: false,
           ),
           BlocProvider(
+            create: (context) {
+              final commonSettingsCubit =
+                  BlocProvider.of<CommonSettingsCubit>(context);
+              return VisibilityCubit(commonSettingsCubit: commonSettingsCubit);
+            },
+            lazy: false,
+          ),
+          BlocProvider(
             create: (context) => CommonBloc(
               weatherCubit: BlocProvider.of<WeatherCubit>(context),
               sunCubit: BlocProvider.of<SunCubit>(context),
@@ -64,6 +73,7 @@ Future main() async {
               windCubit: BlocProvider.of<WindCubit>(context),
               precipitationCubit: BlocProvider.of<PrecipitationCubit>(context),
               cloudinessCubit: BlocProvider.of<CloudinessCubit>(context),
+              visibilityCubit: BlocProvider.of<VisibilityCubit>(context),
               commonSettingsCubit:
                   BlocProvider.of<CommonSettingsCubit>(context),
             )..add(FetchAll()),

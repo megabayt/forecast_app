@@ -100,7 +100,7 @@ class WindBottomSheet extends StatelessWidget {
                           .floor()
                           .toString()
                           .padLeft(5, ' ') +
-                      ' ${commonSettingsCubitState.distanceUnit == DistanceUnit.meters ? 'm' : 'feet'}'
+                      ' ${getDistanceUnitLabel(commonSettingsCubitState.distanceUnit)}'
                           .padLeft(5, ' ')),
                 ],
               ),
@@ -161,14 +161,14 @@ class WindBottomSheet extends StatelessWidget {
             ),
             ListTile(
               title: ToggleButtons(
-                children: const [
+                children: [
                   Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Text('m'),
+                    padding: const EdgeInsets.all(8),
+                    child: Text(getDistanceUnitLabel(DistanceUnit.meters)),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Text('feet'),
+                    padding: const EdgeInsets.all(8),
+                    child: Text(getDistanceUnitLabel(DistanceUnit.feet)),
                   ),
                 ],
                 constraints: BoxConstraints(

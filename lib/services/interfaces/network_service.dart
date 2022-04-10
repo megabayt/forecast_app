@@ -1,5 +1,8 @@
 import 'package:forecast_app/interfaces/common_info.dart';
 
 abstract class NetworkService {
-  Future<CommonInfo> getCommonInfo({required int height});
+  Future<CommonInfo> getCommonInfo({
+    required int height,
+    required String distanceUnit,
+  });
 }

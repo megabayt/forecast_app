@@ -21,6 +21,12 @@ double convertToDistanceUnit(
   if (toUnit == DistanceUnit.feet) {
     return valueToConvert * 3.28084;
   }
+  if (toUnit == DistanceUnit.kilometers) {
+    return valueToConvert / 1000;
+  }
+  if (toUnit == DistanceUnit.miles) {
+    return valueToConvert / 1609;
+  }
   return valueToConvert / 3.28084;
 }
 
@@ -97,4 +103,14 @@ const speedUnitLabels = {
 };
 String getSpeedUnitLabel(SpeedUnit speedUnit) {
   return speedUnitLabels[speedUnit] ?? '';
+}
+
+const distanceUnitLabels = {
+  DistanceUnit.meters: 'm',
+  DistanceUnit.kilometers: 'km',
+  DistanceUnit.feet: 'feet',
+  DistanceUnit.miles: 'miles',
+};
+String getDistanceUnitLabel(DistanceUnit distanceUnit) {
+  return distanceUnitLabels[distanceUnit] ?? '';
 }

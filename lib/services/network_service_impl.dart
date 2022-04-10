@@ -47,20 +47,21 @@ class NetworkServiceImpl implements NetworkService {
     return await Geolocator.getCurrentPosition();
   }
 
-  String _generateUrl({
-    required String timestamp,
-    required double latitude,
-    required double longitude,
-    required int height,
-  }) {
+  String _generateUrl(
+      {required String timestamp,
+      required double latitude,
+      required double longitude,
+      required int height,
+      required String distanceUnit}) {
     final params = [];
 
-    params.add('wind_speed_${height}m:ms');
-    params.add('wind_dir_${height}m:d');
-    params.add('wind_gusts_${height}m:ms');
-    params.add('t_${height}m:C');
+    params.add('wind_speed_$height$distanceUnit:ms');
+    params.add('wind_dir_$height$distanceUnit:d');
+    params.add('wind_gusts_$height$distanceUnit:ms');
+    params.add('t_$height$distanceUnit:C');
     params.add('precip_1h:mm');
     params.add('total_cloud_cover:p');
+    params.add('visibility:$distanceUnit');
     params.add('weather_symbol_30min:idx');
     params.add('sunrise:sql');
     params.add('sunset:sql');
@@ -73,6 +74,7 @@ class NetworkServiceImpl implements NetworkService {
   @override
   Future<CommonInfo> getCommonInfo({
     required int height,
+    required String distanceUnit,
   }) async {
     final login = dotenv.env['LOGIN'];
     final password = dotenv.env['PASSWORD'];
@@ -92,6 +94,7 @@ class NetworkServiceImpl implements NetworkService {
         latitude: position.latitude,
         longitude: position.longitude,
         height: height,
+        distanceUnit: distanceUnit,
       );
 
       final response = await http.get(
