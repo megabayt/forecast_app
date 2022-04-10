@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
+import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
 import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
@@ -43,6 +44,10 @@ Future main() async {
             lazy: false,
           ),
           BlocProvider(
+            create: (_) => PrecipitationCubit(),
+            lazy: false,
+          ),
+          BlocProvider(
             create: (_) => CommonSettingsCubit(),
             lazy: false,
           ),
@@ -52,6 +57,7 @@ Future main() async {
               sunCubit: BlocProvider.of<SunCubit>(context),
               temperatureCubit: BlocProvider.of<TemperatureCubit>(context),
               windCubit: BlocProvider.of<WindCubit>(context),
+              precipitationCubit: BlocProvider.of<PrecipitationCubit>(context),
               commonSettingsCubit:
                   BlocProvider.of<CommonSettingsCubit>(context),
             )..add(FetchAll()),
