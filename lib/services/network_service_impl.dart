@@ -60,6 +60,7 @@ class NetworkServiceImpl implements NetworkService {
     params.add('wind_gusts_${height}m:ms');
     params.add('t_${height}m:C');
     params.add('precip_1h:mm');
+    params.add('total_cloud_cover:p');
     params.add('weather_symbol_30min:idx');
     params.add('sunrise:sql');
     params.add('sunset:sql');

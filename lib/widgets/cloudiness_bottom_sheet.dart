@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
+import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PrecipitationBottomSheet extends StatelessWidget {
-  const PrecipitationBottomSheet({Key? key}) : super(key: key);
+class CloudinessBottomSheet extends StatelessWidget {
+  const CloudinessBottomSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PrecipitationCubit, PrecipitationState>(
-        builder: (precipitationCubitContext, precipitationCubitState) {
+    return BlocBuilder<CloudinessCubit, CloudinessState>(
+        builder: (cloudinessCubitContext, cloudinessCubitState) {
       return Wrap(
         children: [
           ListTile(
@@ -17,17 +17,17 @@ class PrecipitationBottomSheet extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineSmall),
           ),
           const ListTile(
-            title: Text('Вероятность осадков'),
+            title: Text('Облачность'),
           ),
           ListTile(
             title: Text('Настройки',
                 style: Theme.of(context).textTheme.headlineSmall),
           ),
           SwitchListTile(
-            title: const Text('Макс. вероятность осадков'),
-            value: precipitationCubitState.maxOn,
+            title: const Text('Макс. облачность'),
+            value: cloudinessCubitState.maxOn,
             onChanged: (_) {
-              context.read<PrecipitationCubit>().onToggleMax();
+              context.read<CloudinessCubit>().onToggleMax();
             },
           ),
           ListTile(
@@ -35,18 +35,18 @@ class PrecipitationBottomSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: SfSlider(
-                    value: precipitationCubitState.max,
+                    value: cloudinessCubitState.max,
                     min: 0,
                     max: 100,
                     showLabels: true,
                     onChanged: (newValue) {
-                      context.read<PrecipitationCubit>().onChangeMax(
+                      context.read<CloudinessCubit>().onChangeMax(
                             newValue,
                           );
                     },
                   ),
                 ),
-                Text((precipitationCubitState.max)
+                Text((cloudinessCubitState.max)
                         .floor()
                         .toString()
                         .padLeft(5, ' ') +
