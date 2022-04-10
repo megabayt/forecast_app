@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
-import 'package:forecast_app/cubits/cubit/wind_cubit.dart';
+import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
 import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
 import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';

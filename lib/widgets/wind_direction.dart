@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
-import 'package:forecast_app/cubits/cubit/wind_cubit.dart';
+import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
 import 'package:forecast_app/widgets/compass_painter.dart';
 import 'package:forecast_app/widgets/wind_bottom_sheet.dart';
 

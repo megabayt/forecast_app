@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
-import 'package:forecast_app/cubits/cubit/wind_cubit.dart';
+import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
 import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/enums/speed_unit.dart';
 import 'package:forecast_app/utils/helpers.dart';

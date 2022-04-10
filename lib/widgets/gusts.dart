@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
-import 'package:forecast_app/cubits/cubit/wind_cubit.dart';
+import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
 import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:forecast_app/widgets/wind_bottom_sheet.dart';
@@ -35,7 +35,9 @@ class Gusts extends StatelessWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (_) {
-                        return const WindBottomSheet(description: 'Скорость порывов',);
+                        return const WindBottomSheet(
+                          description: 'Скорость порывов',
+                        );
                       },
                     );
                   },
@@ -56,7 +58,8 @@ class Gusts extends StatelessWidget {
                               : [
                                   Text(
                                     windSpeedString,
-                                    style: Theme.of(context).textTheme.titleLarge,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
                                   ),
                                   Text(
                                     heightString,
