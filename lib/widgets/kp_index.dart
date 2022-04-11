@@ -1,14 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
+import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
+import 'package:forecast_app/widgets/kpindex_bottom_sheet.dart';
 
 class KpIndex extends StatelessWidget {
   const KpIndex({Key? key}) : super(key: key);
 
   @override
   build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: const Text("Kp-индекс"),
-      color: Colors.teal[100],
+    return BlocBuilder<CommonBloc, CommonState>(
+      builder: (commonBlocContext, commonBlocState) {
+        return BlocBuilder<KpIndexCubit, KpIndexState>(
+          builder: (precipitationCubitContext, precipitationCubitState) {
+            return GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) {
+                    return const KpIndexBottomSheet();
+                  },
+                );
+              },
+              child: Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Kp-индекс",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      commonBlocState.isFetching
+                          ? const CircularProgressIndicator()
+                          : Text(
+                              precipitationCubitState.value.toString(),
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

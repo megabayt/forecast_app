@@ -20,6 +20,12 @@ class CommonInfo {
   final String status;
   final List<Datum> data;
 
+  CommonInfo mergeWith(CommonInfo other) {
+    return copyWith(
+      data: [...data, ...other.data],
+    );
+  }
+
   CommonInfo copyWith({
     String? version,
     String? user,

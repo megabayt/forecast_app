@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
+import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
 import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
 import 'package:forecast_app/cubits/visibility_cubit/visibility_cubit.dart';
 import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
@@ -27,6 +28,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
   final PrecipitationCubit _precipitationCubit;
   final CloudinessCubit _cloudinessCubit;
   final VisibilityCubit _visibilityCubit;
+  final KpIndexCubit _kpIndexCubit;
   final CommonSettingsCubit _commonSettingsCubit;
 
   CommonBloc({
@@ -37,6 +39,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     required PrecipitationCubit precipitationCubit,
     required CloudinessCubit cloudinessCubit,
     required VisibilityCubit visibilityCubit,
+    required KpIndexCubit kpIndexCubit,
     required CommonSettingsCubit commonSettingsCubit,
   })  : _weatherCubit = weatherCubit,
         _sunCubit = sunCubit,
@@ -45,6 +48,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         _precipitationCubit = precipitationCubit,
         _cloudinessCubit = cloudinessCubit,
         _visibilityCubit = visibilityCubit,
+        _kpIndexCubit = kpIndexCubit,
         _commonSettingsCubit = commonSettingsCubit,
         super(const CommonState()) {
     on<FetchAll>(
@@ -127,6 +131,11 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
           result.getValueByParameter('visibility:$distanceUnitStr');
       if (visibility != null) {
         _visibilityCubit.onValue(visibility);
+      }
+
+      final kpIndex = result.getValueByParameter('kp:idx');
+      if (kpIndex != null) {
+        _kpIndexCubit.onValue(kpIndex);
       }
     } catch (_) {}
     emit(state.copyWith(
