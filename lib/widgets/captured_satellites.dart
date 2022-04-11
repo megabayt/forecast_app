@@ -5,10 +5,12 @@ class CapturedSatellites extends StatelessWidget {
 
   @override
   build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: const Text("Пойманные спутники"),
-      color: Colors.teal[100],
+    return const Card(
+      elevation: 2,
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: Text("Пойманные спутники"),
+      ),
     );
   }
 }
