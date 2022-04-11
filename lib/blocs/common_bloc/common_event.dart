@@ -4,3 +4,5 @@ part of 'common_bloc.dart';
 abstract class CommonEvent {}
 
 class FetchAll extends CommonEvent {}
+
+class FetchCurrentLocation extends CommonEvent {}

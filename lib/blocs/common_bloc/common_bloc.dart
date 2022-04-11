@@ -3,6 +3,7 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
+import 'package:forecast_app/cubits/location_cubit/location_cubit.dart';
 import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
 import 'package:forecast_app/cubits/visibility_cubit/visibility_cubit.dart';
 import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
@@ -11,6 +12,7 @@ import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/cubits/weather_cubit/weather_cubit.dart';
 import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/services/interfaces/network_service.dart';
+import 'package:forecast_app/services/interfaces/geolocation_service.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:meta/meta.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -21,6 +23,7 @@ part 'common_state.dart';
 
 class CommonBloc extends Bloc<CommonEvent, CommonState> {
   final NetworkService _networkService = locator<NetworkService>();
+  final GeolocationService _geolocationService = locator<GeolocationService>();
   final WeatherCubit _weatherCubit;
   final SunCubit _sunCubit;
   final TemperatureCubit _temperatureCubit;
@@ -30,6 +33,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
   final VisibilityCubit _visibilityCubit;
   final KpIndexCubit _kpIndexCubit;
   final CommonSettingsCubit _commonSettingsCubit;
+  final LocationCubit _locationCubit;
 
   CommonBloc({
     required WeatherCubit weatherCubit,
@@ -41,6 +45,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     required VisibilityCubit visibilityCubit,
     required KpIndexCubit kpIndexCubit,
     required CommonSettingsCubit commonSettingsCubit,
+    required LocationCubit locationCubit,
   })  : _weatherCubit = weatherCubit,
         _sunCubit = sunCubit,
         _temperatureCubit = temperatureCubit,
@@ -50,10 +55,14 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         _visibilityCubit = visibilityCubit,
         _kpIndexCubit = kpIndexCubit,
         _commonSettingsCubit = commonSettingsCubit,
+        _locationCubit = locationCubit,
         super(const CommonState()) {
     on<FetchAll>(
       _onWeatherFetch,
       transformer: debounce(const Duration(milliseconds: 500)),
+    );
+    on<FetchCurrentLocation>(
+      _onFetchCurrentLocation,
     );
   }
 
@@ -73,9 +82,16 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
               ? 'm'
               : 'ft';
 
+      final position = _locationCubit.state.position;
+      if (position == null) {
+        _onFetchCurrentLocation(FetchCurrentLocation(), emit);
+        return;
+      }
+
       final result = await _networkService.getCommonInfo(
         height: height,
         distanceUnit: distanceUnitStr,
+        position: position,
       );
 
       final weatherSymbol =
@@ -141,6 +157,21 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     emit(state.copyWith(
       isFetching: false,
     ));
+  }
+
+  void _onFetchCurrentLocation(
+    FetchCurrentLocation event,
+    Emitter<CommonState> emit,
+  ) async {
+    _locationCubit.onLoading();
+    try {
+      final position = await _geolocationService.getCurrentLocation();
+      _locationCubit.onValue(position);
+    } catch (error, stackTrace) {
+      _locationCubit.onError(error, stackTrace);
+    }
+
+    add(FetchAll());
   }
 }
 
