@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:forecast_app/services/interfaces/satellites_service.dart';
+import 'package:forecast_app/services/service_locator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:forecast_app/interfaces/common_info.dart';
@@ -6,6 +8,8 @@ import 'package:forecast_app/services/interfaces/network_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NetworkServiceImpl implements NetworkService {
+  final SatellitesService _satellitesService = locator<SatellitesService>();
+
   /// Determine the current position of the device.
   ///
   /// When the location services are not enabled or permissions
@@ -170,6 +174,10 @@ class NetworkServiceImpl implements NetworkService {
 
       CommonInfo response2Body =
           CommonInfo.fromJson(json.decode(response2.body));
+
+      await _satellitesService.load();
+      await _satellitesService.getSattelitesAbove(
+          latitude: position.latitude, longitude: position.longitude);
 
       return response1Body.mergeWith(response2Body);
     } catch (e) {
