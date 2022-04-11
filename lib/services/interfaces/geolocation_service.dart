@@ -1,5 +1,5 @@
-import 'package:geolocator/geolocator.dart';
+import 'package:forecast_app/interfaces/position_with_placemark.dart';
 
 abstract class GeolocationService {
-  Future<Position> getCurrentLocation();
+  Future<PositionWithPlaceMark> getCurrentLocation();
 }

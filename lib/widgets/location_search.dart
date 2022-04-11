@@ -13,9 +13,11 @@ class LocationSearch extends StatefulWidget {
 class _LocationSearchState extends State<LocationSearch>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  late TextEditingController _textEditingController;
 
   @override
   void initState() {
+    _textEditingController = TextEditingController();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -39,6 +41,31 @@ class _LocationSearchState extends State<LocationSearch>
         } else {
           _animationController.reset();
           _animationController.value = 1;
+        }
+        if (locationState.data != null) {
+          final placemark = locationState.data?.placemark;
+          if (placemark != null) {
+            var addressString = '';
+            final administrativeArea = placemark.administrativeArea ?? '';
+            if (administrativeArea != '') {
+              addressString += administrativeArea + ' ';
+            }
+            final subAdministrativeArea = placemark.subAdministrativeArea ?? '';
+            if (subAdministrativeArea != '') {
+              addressString += subAdministrativeArea + ' ';
+            }
+            final street = placemark.street ?? '';
+            if (street != '') {
+              addressString += street + ' ';
+            }
+            final name = placemark.name ?? '';
+            if (name != '') {
+              addressString += name;
+            }
+
+            _textEditingController.value =
+                TextEditingValue(text: addressString);
+          }
         }
       },
       builder: (locationCubitContext, locationState) => Row(
@@ -64,8 +91,8 @@ class _LocationSearchState extends State<LocationSearch>
               padding: const EdgeInsets.all(8),
               child: Stack(
                 alignment: Alignment.center,
-                children: const <Widget>[
-                  Positioned.fill(
+                children: <Widget>[
+                  const Positioned.fill(
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
@@ -77,7 +104,8 @@ class _LocationSearchState extends State<LocationSearch>
                     ),
                   ),
                   TextField(
-                    decoration: InputDecoration(
+                    controller: _textEditingController,
+                    decoration: const InputDecoration(
                       contentPadding: EdgeInsets.symmetric(horizontal: 40),
                       border: OutlineInputBorder(),
                       hintText: 'Enter a search term',

@@ -82,7 +82,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
               ? 'm'
               : 'ft';
 
-      final position = _locationCubit.state.position;
+      final position = _locationCubit.state.data?.position;
       if (position == null) {
         _onFetchCurrentLocation(FetchCurrentLocation(), emit);
         return;
@@ -165,8 +165,8 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
   ) async {
     _locationCubit.onLoading();
     try {
-      final position = await _geolocationService.getCurrentLocation();
-      _locationCubit.onValue(position);
+      final positionData = await _geolocationService.getCurrentLocation();
+      _locationCubit.onData(positionData);
     } catch (error, stackTrace) {
       _locationCubit.onError(error, stackTrace);
     }

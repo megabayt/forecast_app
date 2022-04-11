@@ -1,4 +1,6 @@
+import 'package:forecast_app/interfaces/position_with_placemark.dart';
 import 'package:forecast_app/services/interfaces/geolocation_service.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class GeolocationServiceImpl implements GeolocationService {
@@ -7,10 +9,9 @@ class GeolocationServiceImpl implements GeolocationService {
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
   @override
-  Future<Position> getCurrentLocation() async {
+  Future<PositionWithPlaceMark> getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
-    await Future.delayed(const Duration(seconds: 3));
 
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -42,6 +43,12 @@ class GeolocationServiceImpl implements GeolocationService {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition();
+    final position = await Geolocator.getCurrentPosition();
+
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark? placemark = placemarks.isNotEmpty ? placemarks[0] : null;
+
+    return PositionWithPlaceMark(position: position, placemark: placemark);
   }
 }

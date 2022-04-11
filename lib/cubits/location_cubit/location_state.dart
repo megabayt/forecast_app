@@ -3,12 +3,12 @@ part of 'location_cubit.dart';
 @CopyWith()
 class LocationState {
   LocationState({
-    this.position,
+    this.data,
     this.loading = false,
     this.error = false,
   });
 
-  Position? position;
+  PositionWithPlaceMark? data;
   bool loading;
   bool error;
 }
