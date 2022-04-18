@@ -32,6 +32,12 @@ class _LocationSearchState extends State<LocationSearch>
     super.dispose();
   }
 
+  void _handleTextChanged(String text) async {
+    if (text.length <= 3) {
+      return;
+    }
+  }
+
   @override
   build(BuildContext context) {
     return BlocConsumer<LocationCubit, LocationState>(
@@ -43,25 +49,9 @@ class _LocationSearchState extends State<LocationSearch>
           _animationController.value = 1;
         }
         if (locationState.data != null) {
-          final placemark = locationState.data?.placemark;
-          if (placemark != null) {
-            var addressString = '';
-            final administrativeArea = placemark.administrativeArea ?? '';
-            if (administrativeArea != '') {
-              addressString += administrativeArea + ' ';
-            }
-            final subAdministrativeArea = placemark.subAdministrativeArea ?? '';
-            if (subAdministrativeArea != '') {
-              addressString += subAdministrativeArea + ' ';
-            }
-            final street = placemark.street ?? '';
-            if (street != '') {
-              addressString += street + ' ';
-            }
-            final name = placemark.name ?? '';
-            if (name != '') {
-              addressString += name;
-            }
+          final address = locationState.data?.address;
+          if (address != null) {
+            final addressString = address.formatted ?? '';
 
             _textEditingController.value =
                 TextEditingValue(text: addressString);
@@ -105,6 +95,7 @@ class _LocationSearchState extends State<LocationSearch>
                   ),
                   TextField(
                     controller: _textEditingController,
+                    onChanged: _handleTextChanged,
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.symmetric(horizontal: 40),
                       border: OutlineInputBorder(),

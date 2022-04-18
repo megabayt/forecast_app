@@ -45,7 +45,7 @@ dependencies:
   geolocator: ^8.2.0
   hydrated_bloc: ^8.1.0
   path_provider: ^2.0.9
-  geocoding: ^2.0.4
+  yandex_geocoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:

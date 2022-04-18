@@ -18,14 +18,14 @@ class LocationCubit extends HydratedCubit<LocationState> {
     super.onError(error, stackTrace);
   }
 
-  void onData(PositionWithPlaceMark newValue) {
+  void onData(PositionWithAddress newValue) {
     emit(state.copyWith(data: newValue, loading: false));
   }
 
   @override
   LocationState fromJson(Map<String, dynamic> json) => LocationState(
         data: json['data'] != null
-            ? PositionWithPlaceMark.fromJson(json['data'])
+            ? PositionWithAddress.fromJson(json['data'])
             : null,
       );
 

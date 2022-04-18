@@ -1,22 +1,20 @@
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:yandex_geocoder/yandex_geocoder.dart';
 
-class PositionWithPlaceMark {
-  PositionWithPlaceMark({required this.position, this.placemark});
+class PositionWithAddress {
+  PositionWithAddress({required this.position, this.address});
 
-  factory PositionWithPlaceMark.fromJson(Map<String, dynamic> json) =>
-      PositionWithPlaceMark(
+  factory PositionWithAddress.fromJson(Map<String, dynamic> json) =>
+      PositionWithAddress(
         position: Position.fromMap(json['position']),
-        placemark: json['placemark'] != null
-            ? Placemark.fromMap(json['placemark'])
-            : null,
+        address: null,
       );
 
   Map<String, dynamic> toJson() => {
         'position': position.toJson(),
-        'placemark': placemark,
+        'address': null,
       };
 
   final Position position;
-  final Placemark? placemark;
+  final Address? address;
 }

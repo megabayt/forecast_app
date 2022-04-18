@@ -8,7 +8,7 @@ class LocationState {
     this.error = false,
   });
 
-  PositionWithPlaceMark? data;
+  PositionWithAddress? data;
   bool loading;
   bool error;
 }
