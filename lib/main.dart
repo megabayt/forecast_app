@@ -4,7 +4,7 @@ import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
-import 'package:forecast_app/cubits/location_cubit/location_cubit.dart';
+import 'package:forecast_app/blocs/location_bloc/location_bloc.dart';
 import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
 import 'package:forecast_app/cubits/visibility_cubit/visibility_cubit.dart';
 import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
@@ -64,10 +64,6 @@ Future main() async {
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => LocationCubit(),
-            lazy: false,
-          ),
-          BlocProvider(
             create: (context) {
               final commonSettingsCubit =
                   BlocProvider.of<CommonSettingsCubit>(context);
@@ -87,8 +83,13 @@ Future main() async {
               kpIndexCubit: BlocProvider.of<KpIndexCubit>(context),
               commonSettingsCubit:
                   BlocProvider.of<CommonSettingsCubit>(context),
-              locationCubit: BlocProvider.of<LocationCubit>(context),
-            )..add(FetchAll()),
+            ),
+            lazy: false,
+          ),
+          BlocProvider(
+            create: (context) => LocationBloc(
+              commonBloc: BlocProvider.of<CommonBloc>(context),
+            )..add(FetchMyLocation()),
             lazy: false,
           ),
         ],

@@ -3,6 +3,8 @@ part of 'common_bloc.dart';
 @immutable
 abstract class CommonEvent {}
 
-class FetchAll extends CommonEvent {}
+class FetchAll extends CommonEvent {
+  FetchAll({required this.position});
 
-class FetchCurrentLocation extends CommonEvent {}
+  final Position position;
+}

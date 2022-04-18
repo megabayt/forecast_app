@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
-import 'package:forecast_app/cubits/location_cubit/location_cubit.dart';
+import 'package:forecast_app/blocs/location_bloc/location_bloc.dart';
 
 class LocationSearch extends StatefulWidget {
   const LocationSearch({Key? key}) : super(key: key);
@@ -40,16 +39,16 @@ class _LocationSearchState extends State<LocationSearch>
 
   @override
   build(BuildContext context) {
-    return BlocConsumer<LocationCubit, LocationState>(
-      listener: (locationCubitContext, locationState) {
-        if (locationState.loading) {
+    return BlocConsumer<LocationBloc, LocationState>(
+      listener: (locationBlocContext, locationState) {
+        if (locationState.isFetching) {
           _animationController.repeat(reverse: true);
         } else {
           _animationController.reset();
           _animationController.value = 1;
         }
-        if (locationState.data != null) {
-          final address = locationState.data?.address;
+        if (locationState.myLocation != null) {
+          final address = locationState.myLocation?.address;
           if (address != null) {
             final addressString = address.formatted ?? '';
 
@@ -58,16 +57,16 @@ class _LocationSearchState extends State<LocationSearch>
           }
         }
       },
-      builder: (locationCubitContext, locationState) => Row(
+      builder: (locationBlocContext, locationState) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(20)),
             onTap: () {
-              if (locationState.loading) {
+              if (locationState.isFetching) {
                 return;
               }
-              BlocProvider.of<CommonBloc>(context).add(FetchCurrentLocation());
+              BlocProvider.of<LocationBloc>(context).add(FetchMyLocation());
             },
             child: FadeTransition(
               opacity: _animationController,

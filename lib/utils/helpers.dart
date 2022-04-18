@@ -1,6 +1,8 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/enums/temperature_unit.dart';
 import 'package:forecast_app/enums/speed_unit.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 double convertToTemperatureUnit(
     double valueToConvert, TemperatureUnit fromUnit, TemperatureUnit toUnit) {
@@ -113,4 +115,11 @@ const distanceUnitLabels = {
 };
 String getDistanceUnitLabel(DistanceUnit distanceUnit) {
   return distanceUnitLabels[distanceUnit] ?? '';
+}
+
+//Debounce query requests
+EventTransformer<E> debounce<E>(Duration duration) {
+  return (events, mapper) {
+    return events.debounce(duration).switchMap(mapper);
+  };
 }
