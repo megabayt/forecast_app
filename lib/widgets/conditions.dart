@@ -22,6 +22,11 @@ class Conditions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width / 3;
+    const height = 120;
+    final ratio = width / height;
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -35,10 +40,8 @@ class Conditions extends StatelessWidget {
             flex: 1,
             child: GridView.count(
               primary: false,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
               crossAxisCount: 3,
-              childAspectRatio: 1.4,
+              childAspectRatio: ratio,
               children: const <Widget>[
                 Weather(),
                 Sun(),
