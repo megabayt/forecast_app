@@ -7,7 +7,9 @@ class PositionWithPlaceMark {
   factory PositionWithPlaceMark.fromJson(Map<String, dynamic> json) =>
       PositionWithPlaceMark(
         position: Position.fromMap(json['position']),
-        placemark: json['placemark'],
+        placemark: json['placemark'] != null
+            ? Placemark.fromMap(json['placemark'])
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
