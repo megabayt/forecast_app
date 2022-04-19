@@ -3,15 +3,19 @@ part of 'location_bloc.dart';
 @immutable
 @CopyWith()
 class LocationState {
-  final bool isFetching;
-  final String error;
+  final bool isFetchingMyLocation;
+  final String errorMyLocation;
   final PositionWithAddress? myLocation;
-  final List<PositionWithAddress>? foundPosition;
+  final bool isFetchingSearch;
+  final String errorSearch;
+  final List<PositionWithAddress>? foundPositions;
 
   const LocationState({
-    this.isFetching = false,
-    this.error = '',
+    this.isFetchingMyLocation = false,
+    this.errorMyLocation = '',
     this.myLocation,
-    this.foundPosition,
+    this.isFetchingSearch = false,
+    this.errorSearch = '',
+    this.foundPositions,
   });
 }

@@ -13,6 +13,7 @@ class _LocationSearchState extends State<LocationSearch>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late TextEditingController _textEditingController;
+  bool wasFetchingMyLocation = false;
 
   @override
   void initState() {
@@ -41,19 +42,21 @@ class _LocationSearchState extends State<LocationSearch>
   build(BuildContext context) {
     return BlocConsumer<LocationBloc, LocationState>(
       listener: (locationBlocContext, locationState) {
-        if (locationState.isFetching) {
+        if (locationState.isFetchingMyLocation) {
           _animationController.repeat(reverse: true);
+          wasFetchingMyLocation = true;
         } else {
           _animationController.reset();
           _animationController.value = 1;
-        }
-        if (locationState.myLocation != null) {
-          final address = locationState.myLocation?.address;
-          if (address != null) {
-            final addressString = address.formatted ?? '';
+          if (wasFetchingMyLocation && locationState.myLocation != null) {
+            final address = locationState.myLocation?.address;
+            if (address != null) {
+              final addressString = address.formatted ?? '';
 
-            _textEditingController.value =
-                TextEditingValue(text: addressString);
+              _textEditingController.value =
+                  TextEditingValue(text: addressString);
+            }
+            wasFetchingMyLocation = false;
           }
         }
       },
@@ -63,7 +66,7 @@ class _LocationSearchState extends State<LocationSearch>
           InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(20)),
             onTap: () {
-              if (locationState.isFetching) {
+              if (locationState.isFetchingMyLocation) {
                 return;
               }
               BlocProvider.of<LocationBloc>(context).add(FetchMyLocation());
@@ -92,44 +95,78 @@ class _LocationSearchState extends State<LocationSearch>
                       ),
                     ),
                   ),
-                  Autocomplete<String>(
-                    fieldViewBuilder: (context, textEditingController,
-                        focusNode, onFieldSubmitted) {
-                      _textEditingController = textEditingController;
-                      return TextField(
-                        controller: textEditingController,
-                        onChanged: _handleTextChanged,
-                        onSubmitted: (String value) {
-                          onFieldSubmitted();
-                        },
-                        focusNode: focusNode,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 40),
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter a search term',
+                  LayoutBuilder(
+                    builder: (context, constraints) => Autocomplete<String>(
+                      fieldViewBuilder: (context, textEditingController,
+                          focusNode, onFieldSubmitted) {
+                        _textEditingController = textEditingController;
+                        return TextField(
+                          controller: textEditingController,
+                          onChanged: _handleTextChanged,
+                          onSubmitted: (String value) {
+                            onFieldSubmitted();
+                          },
+                          focusNode: focusNode,
+                          decoration: const InputDecoration(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 40),
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter a search term',
+                          ),
+                        );
+                      },
+                      optionsViewBuilder: (context, onSelected, options) =>
+                          Align(
+                        alignment: Alignment.topLeft,
+                        child: Material(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                bottom: Radius.circular(4.0)),
+                          ),
+                          child: SizedBox(
+                            height: 52.0 * options.length,
+                            width:
+                                constraints.biggest.width, // <-- Right here !
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: options.length,
+                              shrinkWrap: false,
+                              itemBuilder: (BuildContext context, int index) {
+                                final String option = options.elementAt(index);
+                                return InkWell(
+                                  onTap: () => onSelected(option),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(option),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    optionsBuilder: (TextEditingValue value) {
-                      if (value.text.length <= 3 ||
-                          locationState.foundPosition == null ||
-                          locationState.isFetching) {
-                        return const Iterable<String>.empty();
-                      }
-                      return locationState.foundPosition!
-                          .map(
-                            (e) => e.address?.formatted ?? '',
-                          )
-                          .toList();
-                    },
-                    onSelected: (String selection) {
-                      final location = locationState.foundPosition?.firstWhere(
-                          (element) => element.address?.formatted == selection);
-                      if (location != null) {
-                        BlocProvider.of<LocationBloc>(context)
-                            .add(FetchMyLocationSuccess(data: location));
-                      }
-                    },
+                      ),
+                      optionsBuilder: (TextEditingValue value) {
+                        if (value.text.length <= 3 ||
+                            locationState.foundPositions == null ||
+                            locationState.isFetchingMyLocation) {
+                          return const Iterable<String>.empty();
+                        }
+                        return locationState.foundPositions!
+                            .map(
+                              (e) => e.address?.formatted ?? '',
+                            )
+                            .toList();
+                      },
+                      onSelected: (String selection) {
+                        final location = locationState.foundPositions
+                            ?.firstWhere((element) =>
+                                element.address?.formatted == selection);
+                        if (location != null) {
+                          BlocProvider.of<LocationBloc>(context)
+                              .add(FetchMyLocationSuccess(data: location));
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),

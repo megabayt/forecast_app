@@ -38,7 +38,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     try {
       emit(state.copyWith(
-        isFetching: true,
+        isFetchingMyLocation: true,
       ));
       final location = await _geolocationService.getCurrentLocation();
       add(FetchMyLocationSuccess(data: location));
@@ -53,7 +53,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     _commonBloc.add(FetchAll(point: event.data.point));
     emit(state.copyWith(
-      isFetching: false,
+      isFetchingMyLocation: false,
       myLocation: event.data,
     ));
   }
@@ -63,8 +63,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     emit(state.copyWith(
-      isFetching: false,
-      error: event.error.toString(),
+      isFetchingMyLocation: false,
+      errorMyLocation: event.error.toString(),
     ));
   }
 
@@ -73,7 +73,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     emit(state.copyWith(
-      isFetching: true,
+      isFetchingSearch: true,
     ));
     try {
       final result =
@@ -89,8 +89,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     emit(state.copyWith(
-      isFetching: false,
-      foundPosition: event.data,
+      isFetchingSearch: false,
+      foundPositions: event.data,
     ));
   }
 
@@ -99,8 +99,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     emit(state.copyWith(
-      isFetching: false,
-      error: event.error,
+      isFetchingSearch: false,
+      errorSearch: event.error,
     ));
   }
 }
