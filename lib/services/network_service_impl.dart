@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:forecast_app/interfaces/common_info.dart';
 import 'package:forecast_app/services/interfaces/network_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:yandex_geocoder/yandex_geocoder.dart';
 
 class NetworkServiceImpl implements NetworkService {
   String _generateUrl({
@@ -69,7 +69,7 @@ class NetworkServiceImpl implements NetworkService {
   Future<CommonInfo> getCommonInfo({
     required int height,
     required String distanceUnit,
-    required Position position,
+    required Point point,
   }) async {
     final login = dotenv.env['LOGIN'];
     final password = dotenv.env['PASSWORD'];
@@ -84,8 +84,8 @@ class NetworkServiceImpl implements NetworkService {
 
       final commonArguments = {
         const Symbol('timestamp'): timestamp,
-        const Symbol('latitude'): position.latitude,
-        const Symbol('longitude'): position.longitude,
+        const Symbol('latitude'): point.latitude,
+        const Symbol('longitude'): point.longitude,
         const Symbol('height'): height,
         const Symbol('distanceUnit'): distanceUnit,
       };

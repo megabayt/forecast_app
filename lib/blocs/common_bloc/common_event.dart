@@ -4,7 +4,7 @@ part of 'common_bloc.dart';
 abstract class CommonEvent {}
 
 class FetchAll extends CommonEvent {
-  FetchAll({required this.position});
+  FetchAll({required this.point});
 
-  final Position position;
+  final Point point;
 }

@@ -40,12 +40,26 @@ class GeolocationServiceImpl implements GeolocationService {
     )));
     final address = geocodeResponse.firstAddress;
 
-    return PositionWithAddress(position: position, address: address);
+    return PositionWithAddress(
+        point: Point(pos: '${position.longitude} ${position.latitude}'),
+        address: address);
   }
 
-  // final GeocodeResponse geocodeFromAddress =
-  //     await geocoder.getGeocode(GeocodeRequest(
-  //   geocode: AddressGeocode(address: text),
-  //   lang: Lang.ru,
-  // ));
+  @override
+  Future<List<PositionWithAddress>> getLocationsByAddress(
+      String address) async {
+    final GeocodeResponse geocodeFromAddress =
+        await _geocoder.getGeocode(GeocodeRequest(
+      geocode: AddressGeocode(address: address),
+      lang: Lang.ru,
+    ));
+
+    return geocodeFromAddress.response!.geoObjectCollection!.featureMember!
+        .map((e) {
+      return PositionWithAddress(
+        address: e.geoObject!.metaDataProperty!.geocoderMetaData!.address,
+        point: e.geoObject!.point ?? Point(pos: ''),
+      );
+    }).toList();
+  }
 }

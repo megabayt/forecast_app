@@ -6,7 +6,7 @@ class LocationState {
   final bool isFetching;
   final String error;
   final PositionWithAddress? myLocation;
-  final GeocodeResponse? foundPosition;
+  final List<PositionWithAddress>? foundPosition;
 
   const LocationState({
     this.isFetching = false,

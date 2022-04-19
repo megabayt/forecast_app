@@ -16,7 +16,6 @@ class _LocationSearchState extends State<LocationSearch>
 
   @override
   void initState() {
-    _textEditingController = TextEditingController();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -35,6 +34,7 @@ class _LocationSearchState extends State<LocationSearch>
     if (text.length <= 3) {
       return;
     }
+    BlocProvider.of<LocationBloc>(context).add(FetchLocation(address: text));
   }
 
   @override
@@ -92,14 +92,44 @@ class _LocationSearchState extends State<LocationSearch>
                       ),
                     ),
                   ),
-                  TextField(
-                    controller: _textEditingController,
-                    onChanged: _handleTextChanged,
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 40),
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter a search term',
-                    ),
+                  Autocomplete<String>(
+                    fieldViewBuilder: (context, textEditingController,
+                        focusNode, onFieldSubmitted) {
+                      _textEditingController = textEditingController;
+                      return TextField(
+                        controller: textEditingController,
+                        onChanged: _handleTextChanged,
+                        onSubmitted: (String value) {
+                          onFieldSubmitted();
+                        },
+                        focusNode: focusNode,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 40),
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter a search term',
+                        ),
+                      );
+                    },
+                    optionsBuilder: (TextEditingValue value) {
+                      if (value.text.length <= 3 ||
+                          locationState.foundPosition == null ||
+                          locationState.isFetching) {
+                        return const Iterable<String>.empty();
+                      }
+                      return locationState.foundPosition!
+                          .map(
+                            (e) => e.address?.formatted ?? '',
+                          )
+                          .toList();
+                    },
+                    onSelected: (String selection) {
+                      final location = locationState.foundPosition?.firstWhere(
+                          (element) => element.address?.formatted == selection);
+                      if (location != null) {
+                        BlocProvider.of<LocationBloc>(context)
+                            .add(FetchMyLocationSuccess(data: location));
+                      }
+                    },
                   ),
                 ],
               ),

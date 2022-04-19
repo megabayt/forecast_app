@@ -13,7 +13,7 @@ import 'package:forecast_app/enums/distance_unit.dart';
 import 'package:forecast_app/services/interfaces/network_service.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:forecast_app/utils/helpers.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:yandex_geocoder/yandex_geocoder.dart';
 import 'package:meta/meta.dart';
 
 part 'common_bloc.g.dart';
@@ -77,7 +77,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
       final result = await _networkService.getCommonInfo(
         height: height,
         distanceUnit: distanceUnitStr,
-        position: event.position,
+        point: event.point,
       );
 
       final weatherSymbol =

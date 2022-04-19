@@ -18,12 +18,16 @@ class FetchMyLocationError extends LocationEvent {
 }
 
 class FetchLocation extends LocationEvent {
-  FetchLocation(this.address);
+  FetchLocation({required this.address});
 
   final String address;
 }
 
-class FetchLocationSuccess extends LocationEvent {}
+class FetchLocationSuccess extends LocationEvent {
+  FetchLocationSuccess({required this.data});
+
+  final List<PositionWithAddress> data;
+}
 
 class FetchLocationError extends LocationEvent {
   FetchLocationError({required this.error});

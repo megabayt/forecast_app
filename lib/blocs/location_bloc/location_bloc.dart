@@ -6,7 +6,6 @@ import 'package:forecast_app/services/interfaces/geolocation_service.dart';
 import 'package:forecast_app/services/service_locator.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
-import 'package:yandex_geocoder/yandex_geocoder.dart';
 
 part 'location_bloc.g.dart';
 part 'location_event.dart';
@@ -52,7 +51,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     FetchMyLocationSuccess event,
     Emitter<LocationState> emit,
   ) async {
-    _commonBloc.add(FetchAll(position: event.data.position));
+    _commonBloc.add(FetchAll(point: event.data.point));
     emit(state.copyWith(
       isFetching: false,
       myLocation: event.data,
@@ -72,13 +71,36 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   void _onLocationFetch(
     FetchLocation event,
     Emitter<LocationState> emit,
-  ) async {}
+  ) async {
+    emit(state.copyWith(
+      isFetching: true,
+    ));
+    try {
+      final result =
+          await _geolocationService.getLocationsByAddress(event.address);
+      add(FetchLocationSuccess(data: result));
+    } catch (error) {
+      add(FetchLocationError(error: error.toString()));
+    }
+  }
+
   void _onLocationFetchSuccess(
     FetchLocationSuccess event,
     Emitter<LocationState> emit,
-  ) async {}
+  ) async {
+    emit(state.copyWith(
+      isFetching: false,
+      foundPosition: event.data,
+    ));
+  }
+
   void _onLocationFetchError(
     FetchLocationError event,
     Emitter<LocationState> emit,
-  ) async {}
+  ) async {
+    emit(state.copyWith(
+      isFetching: false,
+      error: event.error,
+    ));
+  }
 }

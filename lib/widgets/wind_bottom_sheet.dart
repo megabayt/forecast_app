@@ -98,9 +98,9 @@ class WindBottomSheet extends StatelessWidget {
                           context.read<CommonSettingsCubit>().onChangeHeight(
                                 newValue,
                               );
-                          if (locationState.myLocation?.position != null) {
+                          if (locationState.myLocation?.point != null) {
                             context.read<CommonBloc>().add(FetchAll(
-                                position: locationState.myLocation!.position));
+                                point: locationState.myLocation!.point));
                           }
                         },
                       ),
