@@ -1,37 +1,36 @@
 part of 'wind_cubit.dart';
 
 @immutable
-class WindState {
-  const WindState({
-    this.direction = 0,
+class WindState extends WithDateState {
+  WindState({
+    DateTime? date,
+    this.speedData = const [],
+    this.gustsData = const [],
+    this.directionData = const [],
     this.speedUnit = SpeedUnit.ms,
-    double speed = 0,
-    double gusts = 0,
     this.maxOn = true,
     this.gustsOn = true,
     double max = 30,
-  })  : _speed = speed,
-        _gusts = gusts,
-        _max = max;
+  })  : _max = max,
+        super(date: (date ?? DateTime.now()));
 
+  @override
   WindState copyWith({
-    double? direction,
+    DateTime? date,
+    List<Date>? speedData,
+    List<Date>? gustsData,
+    List<Date>? directionData,
     SpeedUnit? speedUnit,
-    double? speed,
-    double? gusts,
     bool? maxOn,
     bool? gustsOn,
     double? max,
   }) =>
       WindState(
-        direction: direction ?? this.direction,
+        date: date ?? this.date,
+        speedData: speedData ?? this.speedData,
+        gustsData: gustsData ?? this.gustsData,
+        directionData: directionData ?? this.directionData,
         speedUnit: speedUnit ?? this.speedUnit,
-        speed: speed != null
-            ? convertToSpeedUnit(speed, this.speedUnit, SpeedUnit.ms)
-            : _speed,
-        gusts: gusts != null
-            ? convertToSpeedUnit(gusts, this.speedUnit, SpeedUnit.ms)
-            : _gusts,
         maxOn: maxOn ?? this.maxOn,
         gustsOn: gustsOn ?? this.gustsOn,
         max: max != null
@@ -39,16 +38,38 @@ class WindState {
             : _max,
       );
 
-  final double direction;
-  final SpeedUnit speedUnit;
-  final double _speed;
-  double get speed {
-    return convertToSpeedUnit(_speed, SpeedUnit.ms, speedUnit);
+  double get direction {
+    return directionData
+        .firstWhereOrNull(
+            (element) => element.date.difference(date).inMinutes.abs() < 5)
+        ?.value ?? 0;
   }
 
-  final double _gusts;
+  final List<Date> speedData;
+  final List<Date> gustsData;
+  final List<Date> directionData;
+  final SpeedUnit speedUnit;
+
+  double get speed {
+    return convertToSpeedUnit(
+      speedData
+          .firstWhereOrNull(
+              (element) => element.date.difference(date).inMinutes.abs() < 5)
+          ?.value ?? 0,
+      SpeedUnit.ms,
+      speedUnit,
+    );
+  }
+
   double get gusts {
-    return convertToSpeedUnit(_gusts, SpeedUnit.ms, speedUnit);
+    return convertToSpeedUnit(
+      gustsData
+          .firstWhereOrNull(
+              (element) => element.date.difference(date).inMinutes.abs() < 5)
+          ?.value ?? 0,
+      SpeedUnit.ms,
+      speedUnit,
+    );
   }
 
   final bool gustsOn;
@@ -58,11 +79,15 @@ class WindState {
     return convertToSpeedUnit(_max, SpeedUnit.ms, speedUnit).floorToDouble();
   }
 
-  get recommended {
-    if (maxOn && _speed >= _max) {
+  get recommendedSpeed {
+    if (maxOn && speed >= max) {
       return false;
     }
-    if (gustsOn && maxOn && _gusts >= _max) {
+    return true;
+  }
+
+  get recommendedGusts {
+    if (gustsOn && maxOn && gusts >= max) {
       return false;
     }
     return true;

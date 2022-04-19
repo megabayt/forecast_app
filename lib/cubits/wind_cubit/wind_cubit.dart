@@ -1,29 +1,35 @@
-import 'package:forecast_app/enums/speed_unit.dart';
-import 'package:forecast_app/utils/helpers.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/enums/speed_unit.dart';
+import 'package:forecast_app/interfaces/common_info.dart';
+import 'package:forecast_app/mixins/with_date.dart';
+import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 part 'wind_state.dart';
 
-class WindCubit extends HydratedCubit<WindState> {
-  WindCubit() : super(const WindState());
-
-  onChangeDirection(double newValue) {
-    emit(state.copyWith(
-      direction: newValue,
-    ));
+class WindCubit extends HydratedCubit<WindState> with WithDate {
+  WindCubit({required DateCubit dateCubit}) : super(WindState()) {
+    subDate(dateCubit);
   }
 
-  onChangeSpeed(double newValue) {
-    emit(state.copyWith(
-      speed: convertToSpeedUnit(newValue, SpeedUnit.ms, state.speedUnit),
-    ));
+  @override
+  close() async {
+    await unsubDate();
+    super.close();
   }
 
-  onChangeGusts(double newValue) {
-    emit(state.copyWith(
-      gusts: convertToSpeedUnit(newValue, SpeedUnit.ms, state.speedUnit),
-    ));
+  onSpeedData(List<Date> data) {
+    emit(state.copyWith(speedData: data));
+  }
+
+  onGustsData(List<Date> data) {
+    emit(state.copyWith(gustsData: data));
+  }
+
+  onDirectionData(List<Date> data) {
+    emit(state.copyWith(directionData: data));
   }
 
   onChangeSpeedUnit(SpeedUnit newUnit) {
@@ -38,7 +44,6 @@ class WindCubit extends HydratedCubit<WindState> {
     ));
   }
 
-
   onChangeMax(double newMax) {
     emit(state.copyWith(
       max: newMax,
@@ -50,13 +55,10 @@ class WindCubit extends HydratedCubit<WindState> {
       maxOn: !state.maxOn,
     ));
   }
-  
+
   @override
   WindState fromJson(Map<String, dynamic> json) => WindState(
-        direction: json['direction'],
         speedUnit: SpeedUnit.values.elementAt(json['SpeedUnit']),
-        speed: json['speed'],
-        gusts: json['gusts'],
         gustsOn: json['gustsOn'],
         maxOn: json['maxOn'],
         max: json['max'],
@@ -64,10 +66,7 @@ class WindCubit extends HydratedCubit<WindState> {
 
   @override
   Map<String, dynamic> toJson(WindState state) => {
-        'direction': state.direction,
         'SpeedUnit': state.speedUnit.index,
-        'speed': state._speed,
-        'gusts': state._gusts,
         'gustsOn': state.gustsOn,
         'maxOn': state.maxOn,
         'max': state._max,

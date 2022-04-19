@@ -44,7 +44,7 @@ class Visibility extends StatelessWidget {
                           commonBlocState.isFetching
                               ? const CircularProgressIndicator()
                               : Text(
-                                  visibilityCubitState.valueInKmOrMiles
+                                  visibilityCubitState.value
                                           .toStringAsFixed(0) +
                                       getDistanceUnitLabel(
                                           commonSettingsState.distanceUnit ==

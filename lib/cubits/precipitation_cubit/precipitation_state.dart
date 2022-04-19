@@ -1,27 +1,38 @@
 part of 'precipitation_cubit.dart';
 
 @immutable
-class PrecipitationState {
-  const PrecipitationState({
+class PrecipitationState extends WithDateState {
+  PrecipitationState({
+    DateTime? date,
+    this.data = const [],
     this.maxOn = true,
     this.max = 40,
-    this.value = 0,
-  });
+  }) : super(date: (date ?? DateTime.now()));
 
+  @override
   PrecipitationState copyWith({
+    DateTime? date,
+    List<Date>? data,
     bool? maxOn,
     double? max,
-    double? value,
   }) =>
       PrecipitationState(
+        date: date ?? this.date,
+        data: data ?? this.data,
         maxOn: maxOn ?? this.maxOn,
         max: max ?? this.max,
-        value: value ?? this.value,
       );
 
+  final List<Date> data;
   final bool maxOn;
   final double max;
-  final double value;
+
+  double get value {
+    return data
+        .firstWhereOrNull(
+            (element) => element.date.difference(date).inMinutes.abs() < 5)
+        ?.value ?? 0;
+  }
 
   get recommended {
     return maxOn && value < max;

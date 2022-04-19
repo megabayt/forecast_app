@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
 import 'package:forecast_app/blocs/location_bloc/location_bloc.dart';
 import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
@@ -32,42 +33,57 @@ Future main() async {
       MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (_) => WeatherCubit(),
+            create: (_) => DateCubit(),
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => SunCubit(),
+            create: (context) =>
+                WeatherCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => TemperatureCubit(),
+            create: (context) =>
+                SunCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => WindCubit(),
+            create: (context) => TemperatureCubit(
+                dateCubit: BlocProvider.of<DateCubit>(context)),
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => PrecipitationCubit(),
+            create: (context) =>
+                WindCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => CloudinessCubit(),
+            create: (context) => PrecipitationCubit(
+                dateCubit: BlocProvider.of<DateCubit>(context)),
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => KpIndexCubit(),
+            create: (context) =>
+                CloudinessCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
             lazy: false,
           ),
           BlocProvider(
-            create: (_) => CommonSettingsCubit(),
+            create: (context) =>
+                KpIndexCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
+            lazy: false,
+          ),
+          BlocProvider(
+            create: (context) => CommonSettingsCubit(),
             lazy: false,
           ),
           BlocProvider(
             create: (context) {
               final commonSettingsCubit =
                   BlocProvider.of<CommonSettingsCubit>(context);
-              return VisibilityCubit(commonSettingsCubit: commonSettingsCubit);
+              final dateCubit = BlocProvider.of<DateCubit>(context);
+              return VisibilityCubit(
+                commonSettingsCubit: commonSettingsCubit,
+                dateCubit: dateCubit,
+              );
             },
             lazy: false,
           ),

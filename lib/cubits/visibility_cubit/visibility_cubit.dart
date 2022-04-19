@@ -1,38 +1,40 @@
-import 'dart:async';
-
-import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
-import 'package:forecast_app/enums/distance_unit.dart';
-import 'package:forecast_app/utils/helpers.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/enums/distance_unit.dart';
+import 'package:forecast_app/interfaces/common_info.dart';
+import 'package:forecast_app/mixins/with_date.dart';
+import 'package:forecast_app/mixins/with_distance_unit.dart';
+import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 part 'visibility_state.dart';
 
-class VisibilityCubit extends HydratedCubit<VisibilityState> {
-  VisibilityCubit({required CommonSettingsCubit commonSettingsCubit})
-      : super(VisibilityState(
-            distanceUnit: commonSettingsCubit.state.distanceUnit)) {
-    _commonSettingsSub = commonSettingsCubit.stream.listen((event) {
-      emit(state.copyWith(
-        distanceUnit: event.distanceUnit,
-      ));
-    });
+class VisibilityCubit extends HydratedCubit<VisibilityState>
+    with WithDistanceUnit, WithDate {
+  VisibilityCubit({
+    required CommonSettingsCubit commonSettingsCubit,
+    required DateCubit dateCubit,
+  }) : super(
+          VisibilityState(
+            distanceUnit: commonSettingsCubit.state.distanceUnit,
+          ),
+        ) {
+    subDistanceUnit(commonSettingsCubit);
+    subDate(dateCubit);
   }
-
-  StreamSubscription<CommonSettingsState>? _commonSettingsSub;
 
   @override
   close() async {
-    if (_commonSettingsSub != null) {
-      await _commonSettingsSub?.cancel();
-    }
+    await unsubDate();
+    await unsubDistanceUnit();
     super.close();
   }
 
-  onValue(double newValue) {
+  onData(List<Date> data) {
     emit(state.copyWith(
-      value: convertToDistanceUnit(
-          newValue, DistanceUnit.meters, state.distanceUnit),
+      data: data,
     ));
   }
 
@@ -53,7 +55,6 @@ class VisibilityCubit extends HydratedCubit<VisibilityState> {
         distanceUnit: DistanceUnit.values.elementAt(json['distanceUnit']),
         minOn: json['minOn'],
         min: json['min'],
-        value: json['value'],
       );
 
   @override
@@ -61,6 +62,5 @@ class VisibilityCubit extends HydratedCubit<VisibilityState> {
         'distanceUnit': state.distanceUnit.index,
         'minOn': state.minOn,
         'min': state.min,
-        'value': state._value,
       };
 }

@@ -1,65 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class TimeSlider extends StatefulWidget {
+class TimeSlider extends StatelessWidget {
   const TimeSlider({Key? key}) : super(key: key);
 
   @override
-  State<TimeSlider> createState() => _TimeSliderState();
-}
-
-class _TimeSliderState extends State<TimeSlider> {
-  double _value = 20;
-
-  @override
   build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-            width: double.infinity,
-            height: 30,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                stops: [
-                  0,
-                  0.5,
-                  1.0,
-                ],
-                colors: [
-                  Colors.red,
-                  Colors.green,
-                  Colors.red,
-                ],
-              ),
-            )),
-        SfSliderTheme(
-          data: SfSliderThemeData(
-            activeTrackColor: Colors.transparent,
-            inactiveTrackColor: Colors.transparent,
-            thumbColor: Colors.white,
-            overlayRadius: 0,
-            thumbRadius: 0,
+    return BlocBuilder<DateCubit, DateState>(
+      builder: (dateContext, dateState) => Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+              width: double.infinity,
+              height: 30,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  stops: [
+                    0,
+                    0.5,
+                    1.0,
+                  ],
+                  colors: [
+                    Colors.red,
+                    Colors.green,
+                    Colors.red,
+                  ],
+                ),
+              )),
+          SfSliderTheme(
+            data: SfSliderThemeData(
+              activeTrackColor: Colors.transparent,
+              inactiveTrackColor: Colors.transparent,
+              thumbColor: Colors.white,
+              overlayRadius: 0,
+              thumbRadius: 0,
+            ),
+            child: SfSlider(
+              min: 0.0,
+              max: 24.0,
+              value: dateState.date.hour,
+              interval: 3,
+              showTicks: true,
+              minorTicksPerInterval: 1,
+              tickShape: _SfTickShape(),
+              minorTickShape: _SfMinorTickShape(),
+              thumbShape: _SfThumbShape(),
+              onChanged: (dynamic value) {
+                var dateByValue = DateTime.now();
+                dateByValue = DateTime(
+                  dateByValue.year,
+                  dateByValue.month,
+                  dateByValue.day,
+                  (value as double).toInt(),
+                );
+                BlocProvider.of<DateCubit>(context).onDate(dateByValue);
+              },
+            ),
           ),
-          child: SfSlider(
-            min: 0.0,
-            max: 24.0,
-            value: _value,
-            interval: 3,
-            showTicks: true,
-            minorTicksPerInterval: 1,
-            tickShape: _SfTickShape(),
-            minorTickShape: _SfMinorTickShape(),
-            thumbShape: _SfThumbShape(),
-            onChanged: (dynamic value) {
-              setState(() {
-                _value = value;
-              });
-            },
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

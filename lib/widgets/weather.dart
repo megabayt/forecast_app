@@ -10,9 +10,9 @@ class Weather extends StatelessWidget {
   build(BuildContext context) {
     return BlocBuilder<CommonBloc, CommonState>(
       builder: (commonBlocContext, commonBlocState) {
-        return BlocBuilder<WeatherCubit, int>(
+        return BlocBuilder<WeatherCubit, WeatherState>(
           builder: (weatherCubitContext, weatherCubitState) {
-            final weatherSymbol = weatherCubitState;
+            final weatherSymbol = weatherCubitState.value;
 
             return Card(
               elevation: 2,

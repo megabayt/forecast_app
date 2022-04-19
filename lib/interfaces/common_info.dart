@@ -41,7 +41,7 @@ class CommonInfo {
         data: data ?? this.data,
       );
 
-  dynamic getValueByParameter(String parameter) {
+  List<Date> getValueByParameter(String parameter) {
     try {
       return data
           .firstWhere(
@@ -49,11 +49,9 @@ class CommonInfo {
           )
           .coordinates
           .first
-          .dates
-          .first
-          .value;
+          .dates;
     } catch (e) {
-      return null;
+      return [];
     }
   }
 

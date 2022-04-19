@@ -1,14 +1,26 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/interfaces/common_info.dart';
+import 'package:forecast_app/mixins/with_date.dart';
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 part 'cloudiness_state.dart';
 
-class CloudinessCubit extends HydratedCubit<CloudinessState> {
-  CloudinessCubit() : super(const CloudinessState());
+class CloudinessCubit extends HydratedCubit<CloudinessState> with WithDate {
+  CloudinessCubit({required DateCubit dateCubit}) : super(CloudinessState()) {
+    subDate(dateCubit);
+  }
 
-  onValue(double newValue) {
+  @override
+  close() async {
+    await unsubDate();
+    super.close();
+  }
+
+  onData(List<Date> data) {
     emit(state.copyWith(
-      value: newValue,
+      data: data,
     ));
   }
 
@@ -28,13 +40,11 @@ class CloudinessCubit extends HydratedCubit<CloudinessState> {
   CloudinessState fromJson(Map<String, dynamic> json) => CloudinessState(
         maxOn: json['maxOn'],
         max: json['max'],
-        value: json['value'],
       );
 
   @override
   Map<String, dynamic> toJson(CloudinessState state) => {
         'maxOn': state.maxOn,
         'max': state.max,
-        'value': state.value,
       };
 }

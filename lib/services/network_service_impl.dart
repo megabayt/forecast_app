@@ -76,14 +76,25 @@ class NetworkServiceImpl implements NetworkService {
     final base64Str = base64Encode(utf8.encode('$login:$password'));
 
     try {
-      final now = DateTime.now();
-      var timestamp = now.toIso8601String().split('.')[0];
-      final tzOffset = now.timeZoneOffset.toString().split(':');
+      var now = DateTime.now();
+      now = DateTime(now.year, now.month, now.day);
+      var timestampNow = now.toIso8601String().split('.')[0];
+      final tzOffsetNow = now.timeZoneOffset.toString().split(':');
+      timestampNow +=
+          '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
 
-      timestamp += '.000+${tzOffset[0].padLeft(2, '0')}:${tzOffset[1]}';
+      final timestampPlusWeek =
+          now.add(const Duration(days: 7)).toIso8601String().split('.')[0] +
+              '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
+      final resultTimestampPlusWeek = '$timestampNow--$timestampPlusWeek:PT5M';
+
+      final timestampPlusTwoDays =
+          now.add(const Duration(days: 2)).toIso8601String().split('.')[0] +
+              '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
+      final resultTimestampPlusTwoDays = '$timestampNow--$timestampPlusTwoDays:PT5M';
 
       final commonArguments = {
-        const Symbol('timestamp'): timestamp,
+        const Symbol('timestamp'): resultTimestampPlusWeek,
         const Symbol('latitude'): point.latitude,
         const Symbol('longitude'): point.longitude,
         const Symbol('height'): height,
@@ -100,6 +111,8 @@ class NetworkServiceImpl implements NetworkService {
         const Symbol('cloudiness'): true,
         const Symbol('visibility'): true,
         const Symbol('weatherSymbol'): true,
+        const Symbol('sunrise'): true,
+        const Symbol('sunset'): true,
       });
 
       final response1 = await http.get(
@@ -114,8 +127,7 @@ class NetworkServiceImpl implements NetworkService {
 
       final url2 = Function.apply(_generateUrl, [], {
         ...commonArguments,
-        const Symbol('sunrise'): true,
-        const Symbol('sunset'): true,
+        const Symbol('timestamp'): resultTimestampPlusTwoDays,
         const Symbol('kpIndex'): true,
       });
 

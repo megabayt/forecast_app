@@ -1,17 +1,28 @@
-import 'package:forecast_app/enums/temperature_unit.dart';
-import 'package:forecast_app/utils/helpers.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/enums/temperature_unit.dart';
+import 'package:forecast_app/interfaces/common_info.dart';
+import 'package:forecast_app/mixins/with_date.dart';
+import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 part 'temperature_state.dart';
 
-class TemperatureCubit extends HydratedCubit<TemperatureState> {
-  TemperatureCubit() : super(const TemperatureState());
+class TemperatureCubit extends HydratedCubit<TemperatureState> with WithDate {
+  TemperatureCubit({required DateCubit dateCubit}) : super(TemperatureState()) {
+    subDate(dateCubit);
+  }
 
-  onValue(double newValue) {
+  @override
+  close() async {
+    await unsubDate();
+    super.close();
+  }
+
+  onData(List<Date> data) {
     emit(state.copyWith(
-      value: convertToTemperatureUnit(
-          newValue, TemperatureUnit.celsius, state.temperatureUnit),
+      data: data,
     ));
   }
 
@@ -53,7 +64,6 @@ class TemperatureCubit extends HydratedCubit<TemperatureState> {
         maxOn: json['maxOn'],
         min: json['min'],
         max: json['max'],
-        value: json['value'],
       );
 
   @override
@@ -63,6 +73,5 @@ class TemperatureCubit extends HydratedCubit<TemperatureState> {
         'maxOn': state.maxOn,
         'min': state._min,
         'max': state._max,
-        'value': state._value,
       };
 }

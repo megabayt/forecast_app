@@ -53,12 +53,22 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
         _commonSettingsCubit = commonSettingsCubit,
         super(const CommonState()) {
     on<FetchAll>(
-      _onWeatherFetch,
+      _onFetchAll,
       transformer: debounce(const Duration(milliseconds: 500)),
     );
   }
 
-  void _onWeatherFetch(
+  get height {
+    return _commonSettingsCubit.state.height.floor();
+  }
+
+  get distanceUnitStr {
+    return _commonSettingsCubit.state.distanceUnit == DistanceUnit.meters
+        ? 'm'
+        : 'ft';
+  }
+
+  void _onFetchAll(
     FetchAll event,
     Emitter<CommonState> emit,
   ) async {
@@ -68,12 +78,6 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     ));
 
     try {
-      final height = _commonSettingsCubit.state.height.floor();
-      final distanceUnitStr =
-          _commonSettingsCubit.state.distanceUnit == DistanceUnit.meters
-              ? 'm'
-              : 'ft';
-
       final result = await _networkService.getCommonInfo(
         height: height,
         distanceUnit: distanceUnitStr,
@@ -82,66 +86,52 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
 
       final weatherSymbol =
           result.getValueByParameter('weather_symbol_30min:idx');
-      if (weatherSymbol != null) {
-        _weatherCubit.onValue(weatherSymbol);
-      }
+      _weatherCubit.onData(weatherSymbol);
 
       final sunrise = result.getValueByParameter('sunrise:sql');
       final sunset = result.getValueByParameter('sunset:sql');
-      if (sunrise != null && sunset != null) {
-        _sunCubit.onValue(
-          sunrise: sunrise,
-          sunset: sunset,
-        );
-      }
+      _sunCubit.onData(
+        sunrise: sunrise,
+        sunset: sunset,
+      );
 
       final temperature =
           result.getValueByParameter('t_$height$distanceUnitStr:C');
-      if (temperature != null) {
-        _temperatureCubit.onValue(temperature);
-      }
+      _temperatureCubit.onData(temperature);
 
       final windSpeed =
           result.getValueByParameter('wind_speed_$height$distanceUnitStr:ms');
-      if (windSpeed != null) {
-        _windCubit.onChangeSpeed(windSpeed);
-      }
+      _windCubit.onSpeedData(windSpeed);
 
       final windGusts =
           result.getValueByParameter('wind_gusts_$height$distanceUnitStr:ms');
-      if (windGusts != null) {
-        _windCubit.onChangeGusts(windGusts);
-      }
+      _windCubit.onGustsData(windGusts);
 
       final windDirection =
           result.getValueByParameter('wind_dir_$height$distanceUnitStr:d');
-      if (windDirection != null) {
-        _windCubit.onChangeDirection(windDirection);
-      }
+      _windCubit.onDirectionData(windDirection);
 
       final precipitation = result.getValueByParameter('precip_1h:mm');
-      if (precipitation != null) {
-        _precipitationCubit.onValue(precipitation);
-      }
+      _precipitationCubit.onData(precipitation);
 
       final cloudiness = result.getValueByParameter('total_cloud_cover:p');
-      if (cloudiness != null) {
-        _cloudinessCubit.onValue(cloudiness);
-      }
+      _cloudinessCubit.onData(cloudiness);
 
       final visibility =
           result.getValueByParameter('visibility:$distanceUnitStr');
-      if (visibility != null) {
-        _visibilityCubit.onValue(visibility);
-      }
+      _visibilityCubit.onData(visibility);
 
       final kpIndex = result.getValueByParameter('kp:idx');
-      if (kpIndex != null) {
-        _kpIndexCubit.onValue(kpIndex);
-      }
-    } catch (_) {}
-    emit(state.copyWith(
-      isFetching: false,
-    ));
+      _kpIndexCubit.onData(kpIndex);
+
+      emit(state.copyWith(
+        isFetching: false,
+      ));
+    } catch (error) {
+      emit(state.copyWith(
+        isFetching: false,
+        error: error.toString(),
+      ));
+    }
   }
 }

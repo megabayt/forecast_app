@@ -1,27 +1,32 @@
 part of 'temperature_cubit.dart';
 
 @immutable
-class TemperatureState {
-  const TemperatureState({
+class TemperatureState extends WithDateState {
+  TemperatureState({
+    DateTime? date,
+    this.data = const [],
     this.temperatureUnit = TemperatureUnit.celsius,
     this.minOn = true,
     this.maxOn = true,
     double min = -30,
     double max = 30,
-    double value = 0,
-  })  : _value = value,
-        _min = min,
-        _max = max;
+  })  : _min = min,
+        _max = max,
+        super(date: (date ?? DateTime.now()));
 
+  @override
   TemperatureState copyWith({
+    DateTime? date,
     TemperatureUnit? temperatureUnit,
+    List<Date>? data,
     bool? minOn,
     bool? maxOn,
     double? min,
     double? max,
-    double? value,
   }) =>
       TemperatureState(
+        date: date ?? this.date,
+        data: data ?? this.data,
         temperatureUnit: temperatureUnit ?? this.temperatureUnit,
         minOn: minOn ?? this.minOn,
         maxOn: maxOn ?? this.maxOn,
@@ -33,12 +38,9 @@ class TemperatureState {
             ? convertToTemperatureUnit(
                 max, this.temperatureUnit, TemperatureUnit.celsius)
             : _max,
-        value: value != null
-            ? convertToTemperatureUnit(
-                value, this.temperatureUnit, TemperatureUnit.celsius)
-            : _value,
       );
 
+  final List<Date> data;
   final TemperatureUnit temperatureUnit;
   final bool minOn;
   final bool maxOn;
@@ -57,17 +59,21 @@ class TemperatureState {
         .floorToDouble();
   }
 
-  final double _value;
   double get value {
     return convertToTemperatureUnit(
-        _value, TemperatureUnit.celsius, temperatureUnit);
+        data
+            .firstWhereOrNull(
+                (element) => element.date.difference(date).inMinutes.abs() < 5)
+            ?.value ?? 0,
+        TemperatureUnit.celsius,
+        temperatureUnit);
   }
 
   get recommended {
-    if (maxOn && _value >= _max) {
+    if (maxOn && value >= max) {
       return false;
     }
-    if (minOn && _value <= _min) {
+    if (minOn && value <= min) {
       return false;
     }
     return true;

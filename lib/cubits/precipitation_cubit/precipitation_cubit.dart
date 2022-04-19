@@ -1,14 +1,28 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/interfaces/common_info.dart';
+import 'package:forecast_app/mixins/with_date.dart';
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 part 'precipitation_state.dart';
 
-class PrecipitationCubit extends HydratedCubit<PrecipitationState> {
-  PrecipitationCubit() : super(const PrecipitationState());
+class PrecipitationCubit extends HydratedCubit<PrecipitationState>
+    with WithDate {
+  PrecipitationCubit({required DateCubit dateCubit})
+      : super(PrecipitationState()) {
+    subDate(dateCubit);
+  }
 
-  onValue(double newValue) {
+  @override
+  close() async {
+    await unsubDate();
+    super.close();
+  }
+
+  onData(List<Date> data) {
     emit(state.copyWith(
-      value: newValue,
+      data: data,
     ));
   }
 
@@ -28,13 +42,11 @@ class PrecipitationCubit extends HydratedCubit<PrecipitationState> {
   PrecipitationState fromJson(Map<String, dynamic> json) => PrecipitationState(
         maxOn: json['maxOn'],
         max: json['max'],
-        value: json['value'],
       );
 
   @override
   Map<String, dynamic> toJson(PrecipitationState state) => {
         'maxOn': state.maxOn,
         'max': state.max,
-        'value': state.value,
       };
 }

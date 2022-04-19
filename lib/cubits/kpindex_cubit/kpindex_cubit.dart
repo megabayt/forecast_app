@@ -1,14 +1,26 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/interfaces/common_info.dart';
+import 'package:forecast_app/mixins/with_date.dart';
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 
 part 'kpindex_state.dart';
 
-class KpIndexCubit extends HydratedCubit<KpIndexState> {
-  KpIndexCubit() : super(const KpIndexState());
+class KpIndexCubit extends HydratedCubit<KpIndexState> with WithDate {
+  KpIndexCubit({required DateCubit dateCubit}) : super(KpIndexState()) {
+    subDate(dateCubit);
+  }
 
-  onValue(int newValue) {
+  @override
+  close() async {
+    await unsubDate();
+    super.close();
+  }
+
+  onData(List<Date> data) {
     emit(state.copyWith(
-      value: newValue,
+      data: data,
     ));
   }
 
@@ -28,13 +40,11 @@ class KpIndexCubit extends HydratedCubit<KpIndexState> {
   KpIndexState fromJson(Map<String, dynamic> json) => KpIndexState(
         maxOn: json['maxOn'],
         max: json['max'],
-        value: json['value'],
       );
 
   @override
   Map<String, dynamic> toJson(KpIndexState state) => {
         'maxOn': state.maxOn,
         'max': state.max,
-        'value': state.value,
       };
 }

@@ -40,7 +40,7 @@ class WindSpeed extends StatelessWidget {
                   },
                   child: Card(
                     elevation: 2,
-                    color: windCubitState.recommended ? Colors.white : Colors.red[300],
+                    color: windCubitState.recommendedSpeed ? Colors.white : Colors.red[300],
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Column(
