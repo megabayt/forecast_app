@@ -22,4 +22,8 @@ class CloudinessState {
   final bool maxOn;
   final double max;
   final double value;
+
+  get recommended {
+    return maxOn && value < max;
+  }
 }

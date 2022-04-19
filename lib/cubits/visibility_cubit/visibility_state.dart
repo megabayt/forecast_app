@@ -59,4 +59,8 @@ class VisibilityState {
             ? DistanceUnit.kilometers
             : DistanceUnit.miles);
   }
+  
+  get recommended {
+    return minOn && value > min;
+  }
 }

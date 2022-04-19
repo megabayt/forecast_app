@@ -22,4 +22,8 @@ class KpIndexState {
   final bool maxOn;
   final int max;
   final int value;
+
+  get recommended {
+    return maxOn && value < max;
+  }
 }

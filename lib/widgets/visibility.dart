@@ -17,7 +17,7 @@ class Visibility extends StatelessWidget {
         return BlocBuilder<CommonSettingsCubit, CommonSettingsState>(
           builder: (commonSettingsContext, commonSettingsState) {
             return BlocBuilder<VisibilityCubit, VisibilityState>(
-              builder: (cloudinessCubitContext, cloudinessCubitState) {
+              builder: (visibilityCubitContext, visibilityCubitState) {
                 return GestureDetector(
                   onTap: () {
                     showModalBottomSheet(
@@ -30,6 +30,7 @@ class Visibility extends StatelessWidget {
                   },
                   child: Card(
                     elevation: 2,
+                    color: visibilityCubitState.recommended ? Colors.white : Colors.red[300],
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Column(
@@ -43,7 +44,7 @@ class Visibility extends StatelessWidget {
                           commonBlocState.isFetching
                               ? const CircularProgressIndicator()
                               : Text(
-                                  cloudinessCubitState.valueInKmOrMiles
+                                  visibilityCubitState.valueInKmOrMiles
                                           .toStringAsFixed(0) +
                                       getDistanceUnitLabel(
                                           commonSettingsState.distanceUnit ==

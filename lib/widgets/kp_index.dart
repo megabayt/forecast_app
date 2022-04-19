@@ -12,7 +12,7 @@ class KpIndex extends StatelessWidget {
     return BlocBuilder<CommonBloc, CommonState>(
       builder: (commonBlocContext, commonBlocState) {
         return BlocBuilder<KpIndexCubit, KpIndexState>(
-          builder: (precipitationCubitContext, precipitationCubitState) {
+          builder: (kpIndexCubitContext, kpIndexCubitState) {
             return GestureDetector(
               onTap: () {
                 showModalBottomSheet(
@@ -25,6 +25,9 @@ class KpIndex extends StatelessWidget {
               },
               child: Card(
                 elevation: 2,
+                color: kpIndexCubitState.recommended
+                    ? Colors.white
+                    : Colors.red[300],
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Column(
@@ -38,7 +41,7 @@ class KpIndex extends StatelessWidget {
                       commonBlocState.isFetching
                           ? const CircularProgressIndicator()
                           : Text(
-                              precipitationCubitState.value.toString(),
+                              kpIndexCubitState.value.toString(),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                     ],

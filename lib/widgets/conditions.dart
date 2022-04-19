@@ -35,7 +35,6 @@ class Conditions extends StatelessWidget {
         children: [
           const LocationSearch(),
           const Recommendation(),
-          const SizedBox(height: 10),
           Expanded(
             flex: 1,
             child: GridView.count(

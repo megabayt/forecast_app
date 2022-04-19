@@ -62,4 +62,14 @@ class TemperatureState {
     return convertToTemperatureUnit(
         _value, TemperatureUnit.celsius, temperatureUnit);
   }
+
+  get recommended {
+    if (maxOn && _value >= _max) {
+      return false;
+    }
+    if (minOn && _value <= _min) {
+      return false;
+    }
+    return true;
+  }
 }

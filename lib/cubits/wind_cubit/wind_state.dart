@@ -45,6 +45,7 @@ class WindState {
   double get speed {
     return convertToSpeedUnit(_speed, SpeedUnit.ms, speedUnit);
   }
+
   final double _gusts;
   double get gusts {
     return convertToSpeedUnit(_gusts, SpeedUnit.ms, speedUnit);
@@ -55,5 +56,15 @@ class WindState {
   final double _max;
   double get max {
     return convertToSpeedUnit(_max, SpeedUnit.ms, speedUnit).floorToDouble();
+  }
+
+  get recommended {
+    if (maxOn && _speed >= _max) {
+      return false;
+    }
+    if (gustsOn && maxOn && _gusts >= _max) {
+      return false;
+    }
+    return true;
   }
 }
