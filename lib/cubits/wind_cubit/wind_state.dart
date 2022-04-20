@@ -4,9 +4,9 @@ part of 'wind_cubit.dart';
 class WindState extends WithDateState {
   WindState({
     DateTime? date,
-    this.speedData = const [],
-    this.gustsData = const [],
-    this.directionData = const [],
+    this.speedData = const {},
+    this.gustsData = const {},
+    this.directionData = const {},
     this.speedUnit = SpeedUnit.ms,
     this.maxOn = true,
     this.gustsOn = true,
@@ -17,9 +17,9 @@ class WindState extends WithDateState {
   @override
   WindState copyWith({
     DateTime? date,
-    List<Date>? speedData,
-    List<Date>? gustsData,
-    List<Date>? directionData,
+    Map<String, dynamic>? speedData,
+    Map<String, dynamic>? gustsData,
+    Map<String, dynamic>? directionData,
     SpeedUnit? speedUnit,
     bool? maxOn,
     bool? gustsOn,
@@ -39,23 +39,17 @@ class WindState extends WithDateState {
       );
 
   double get direction {
-    return directionData
-        .firstWhereOrNull(
-            (element) => element.date.difference(date).inMinutes.abs() < 5)
-        ?.value ?? 0;
+    return directionData[dateUtcString] ?? 0;
   }
 
-  final List<Date> speedData;
-  final List<Date> gustsData;
-  final List<Date> directionData;
+  final Map<String, dynamic> speedData;
+  final Map<String, dynamic> gustsData;
+  final Map<String, dynamic> directionData;
   final SpeedUnit speedUnit;
 
   double get speed {
     return convertToSpeedUnit(
-      speedData
-          .firstWhereOrNull(
-              (element) => element.date.difference(date).inMinutes.abs() < 5)
-          ?.value ?? 0,
+      speedData[dateUtcString] ?? 0,
       SpeedUnit.ms,
       speedUnit,
     );
@@ -63,10 +57,7 @@ class WindState extends WithDateState {
 
   double get gusts {
     return convertToSpeedUnit(
-      gustsData
-          .firstWhereOrNull(
-              (element) => element.date.difference(date).inMinutes.abs() < 5)
-          ?.value ?? 0,
+      gustsData[dateUtcString] ?? 0,
       SpeedUnit.ms,
       speedUnit,
     );
@@ -79,14 +70,14 @@ class WindState extends WithDateState {
     return convertToSpeedUnit(_max, SpeedUnit.ms, speedUnit).floorToDouble();
   }
 
-  get recommendedSpeed {
+  bool get recommendedSpeed {
     if (maxOn && speed >= max) {
       return false;
     }
     return true;
   }
 
-  get recommendedGusts {
+  bool get recommendedGusts {
     if (gustsOn && maxOn && gusts >= max) {
       return false;
     }

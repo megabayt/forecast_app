@@ -58,11 +58,11 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
     );
   }
 
-  get height {
+  int get height {
     return _commonSettingsCubit.state.height.floor();
   }
 
-  get distanceUnitStr {
+  String get distanceUnitStr {
     return _commonSettingsCubit.state.distanceUnit == DistanceUnit.meters
         ? 'm'
         : 'ft';

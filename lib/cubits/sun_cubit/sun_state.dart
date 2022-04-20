@@ -4,18 +4,18 @@ part of 'sun_cubit.dart';
 class SunState extends WithDateState {
   SunState({
     DateTime? date,
-    this.sunrises = const [],
-    this.sunsets = const [],
+    this.sunrises = const {},
+    this.sunsets = const {},
   }) : super(date: (date ?? DateTime.now()));
 
-  final List<Date> sunrises;
-  final List<Date> sunsets;
+  final Map<String, dynamic> sunrises;
+  final Map<String, dynamic> sunsets;
 
   @override
   SunState copyWith({
     DateTime? date,
-    List<Date>? sunrises,
-    List<Date>? sunsets,
+    Map<String, dynamic>? sunrises,
+    Map<String, dynamic>? sunsets,
   }) =>
       SunState(
         date: date ?? this.date,
@@ -24,10 +24,7 @@ class SunState extends WithDateState {
       );
 
   String get sunrise {
-    final sunriseStr = sunrises
-        .firstWhereOrNull(
-            (element) => element.date.difference(date).inMinutes.abs() < 5)
-        ?.value;
+    final sunriseStr = sunrises[dateUtcString];
     if (sunriseStr == null) {
       return '';
     }
@@ -36,10 +33,7 @@ class SunState extends WithDateState {
   }
 
   String get sunset {
-    final sunsetStr = sunsets
-        .firstWhereOrNull(
-            (element) => element.date.difference(date).inMinutes.abs() < 5)
-        ?.value;
+    final sunsetStr = sunsets[dateUtcString];
     if (sunsetStr == null) {
       return '';
     }

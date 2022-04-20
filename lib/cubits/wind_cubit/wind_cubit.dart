@@ -1,11 +1,9 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:forecast_app/enums/speed_unit.dart';
-import 'package:forecast_app/interfaces/common_info.dart';
 import 'package:forecast_app/mixins/with_date.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
 
 part 'wind_state.dart';
 
@@ -20,15 +18,15 @@ class WindCubit extends HydratedCubit<WindState> with WithDate {
     super.close();
   }
 
-  onSpeedData(List<Date> data) {
+  onSpeedData(Map<String, dynamic> data) {
     emit(state.copyWith(speedData: data));
   }
 
-  onGustsData(List<Date> data) {
+  onGustsData(Map<String, dynamic> data) {
     emit(state.copyWith(gustsData: data));
   }
 
-  onDirectionData(List<Date> data) {
+  onDirectionData(Map<String, dynamic> data) {
     emit(state.copyWith(directionData: data));
   }
 

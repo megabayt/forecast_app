@@ -1,11 +1,9 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:forecast_app/enums/temperature_unit.dart';
-import 'package:forecast_app/interfaces/common_info.dart';
 import 'package:forecast_app/mixins/with_date.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
 
 part 'temperature_state.dart';
 
@@ -20,7 +18,7 @@ class TemperatureCubit extends HydratedCubit<TemperatureState> with WithDate {
     super.close();
   }
 
-  onData(List<Date> data) {
+  onData(Map<String, dynamic> data) {
     emit(state.copyWith(
       data: data,
     ));

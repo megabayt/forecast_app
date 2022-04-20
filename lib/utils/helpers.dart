@@ -123,3 +123,43 @@ EventTransformer<E> debounce<E>(Duration duration) {
     return events.debounce(duration).switchMap(mapper);
   };
 }
+
+DateTime convertHourToDateTime(double hour) {
+  final dateFromValue = DateTime.now();
+  var minute = ((hour % 1) * 60).toInt();
+  if (minute % 5 <= 2.5) {
+    minute -= minute % 5;
+  } else {
+    minute += 5 - minute % 5;
+  }
+  return DateTime(
+    dateFromValue.year,
+    dateFromValue.month,
+    dateFromValue.day,
+    hour.toInt(),
+    minute,
+    0,
+    0,
+    0,
+  );
+}
+
+DateTime roundToNearest5(DateTime? value) {
+  value ??= DateTime.now();
+  var minute = value.minute;
+  if (minute % 5 <= 2.5) {
+    minute -= minute % 5;
+  } else {
+    minute += 5 - minute % 5;
+  }
+  return DateTime(
+    value.year,
+    value.month,
+    value.day,
+    value.hour,
+    minute,
+    0,
+    0,
+    0,
+  );
+}

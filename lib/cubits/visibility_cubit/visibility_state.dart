@@ -5,7 +5,7 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
   VisibilityState({
     DateTime? date,
     this.distanceUnit = DistanceUnit.meters,
-    this.data = const [],
+    this.data = const {},
     this.minOn = true,
     double min = 2000,
   })  : _min = min,
@@ -13,7 +13,7 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
 
   @override
   VisibilityState copyWith({
-    List<Date>? data,
+    Map<String, dynamic>? data,
     DistanceUnit? distanceUnit,
     DateTime? date,
     bool? minOn,
@@ -33,7 +33,15 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
   final DistanceUnit distanceUnit;
   @override
   final DateTime date;
-  final List<Date> data;
+  @override
+  String get dateUtcString {
+    return date
+        .toUtc()
+        .toIso8601String()
+        .replaceAll(RegExp(':\\d{2}\\.\\d+'), ':00');
+  }
+
+  final Map<String, dynamic> data;
   final bool minOn;
 
   final double _min;
@@ -53,11 +61,7 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
 
   double get value {
     return convertToDistanceUnit(
-        data
-                .firstWhereOrNull((element) =>
-                    element.date.difference(date).inMinutes.abs() < 5)
-                ?.value ??
-            0,
+        data[dateUtcString] ?? 0,
         DistanceUnit.meters,
         distanceUnit == DistanceUnit.meters
             ? DistanceUnit.kilometers
@@ -66,16 +70,10 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
 
   double get valueInMetersOrMiles {
     return convertToDistanceUnit(
-        data
-                .firstWhereOrNull((element) =>
-                    element.date.difference(date).inMinutes.abs() < 5)
-                ?.value ??
-            0,
-        DistanceUnit.meters,
-        distanceUnit);
+        data[dateUtcString] ?? 0, DistanceUnit.meters, distanceUnit);
   }
 
-  get recommended {
+  bool get recommended {
     return minOn && valueInMetersOrMiles > min;
   }
 }

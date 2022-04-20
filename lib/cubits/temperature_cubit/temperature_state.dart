@@ -4,7 +4,7 @@ part of 'temperature_cubit.dart';
 class TemperatureState extends WithDateState {
   TemperatureState({
     DateTime? date,
-    this.data = const [],
+    this.data = const {},
     this.temperatureUnit = TemperatureUnit.celsius,
     this.minOn = true,
     this.maxOn = true,
@@ -18,7 +18,7 @@ class TemperatureState extends WithDateState {
   TemperatureState copyWith({
     DateTime? date,
     TemperatureUnit? temperatureUnit,
-    List<Date>? data,
+    Map<String, dynamic>? data,
     bool? minOn,
     bool? maxOn,
     double? min,
@@ -40,7 +40,7 @@ class TemperatureState extends WithDateState {
             : _max,
       );
 
-  final List<Date> data;
+  final Map<String, dynamic> data;
   final TemperatureUnit temperatureUnit;
   final bool minOn;
   final bool maxOn;
@@ -61,15 +61,10 @@ class TemperatureState extends WithDateState {
 
   double get value {
     return convertToTemperatureUnit(
-        data
-            .firstWhereOrNull(
-                (element) => element.date.difference(date).inMinutes.abs() < 5)
-            ?.value ?? 0,
-        TemperatureUnit.celsius,
-        temperatureUnit);
+        data[dateUtcString] ?? 0, TemperatureUnit.celsius, temperatureUnit);
   }
 
-  get recommended {
+  bool get recommended {
     if (maxOn && value >= max) {
       return false;
     }

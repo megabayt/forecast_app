@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/utils/helpers.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
@@ -41,7 +42,7 @@ class TimeSlider extends StatelessWidget {
             child: SfSlider(
               min: 0.0,
               max: 24.0,
-              value: dateState.date.hour,
+              value: dateState.date.hour + dateState.date.minute / 60,
               interval: 3,
               showTicks: true,
               minorTicksPerInterval: 1,
@@ -49,13 +50,7 @@ class TimeSlider extends StatelessWidget {
               minorTickShape: _SfMinorTickShape(),
               thumbShape: _SfThumbShape(),
               onChanged: (dynamic value) {
-                var dateByValue = DateTime.now();
-                dateByValue = DateTime(
-                  dateByValue.year,
-                  dateByValue.month,
-                  dateByValue.day,
-                  (value as double).toInt(),
-                );
+                final dateByValue = convertHourToDateTime(value);
                 BlocProvider.of<DateCubit>(context).onDate(dateByValue);
               },
             ),

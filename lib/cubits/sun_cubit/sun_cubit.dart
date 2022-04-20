@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
-import 'package:forecast_app/interfaces/common_info.dart';
 import 'package:forecast_app/mixins/with_date.dart';
 import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
 
 part 'sun_state.dart';
 
@@ -19,8 +17,8 @@ class SunCubit extends Cubit<SunState> with WithDate {
   }
 
   onData({
-    required List<Date> sunrise,
-    required List<Date> sunset,
+    required Map<String, dynamic> sunrise,
+    required Map<String, dynamic> sunset,
   }) {
     emit(SunState(sunrises: sunrise, sunsets: sunset));
   }

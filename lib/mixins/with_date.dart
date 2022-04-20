@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/utils/helpers.dart';
 
 mixin WithDate<T extends WithDateState> on Cubit<T> {
   StreamSubscription<DateState>? _sub;
@@ -22,11 +23,18 @@ mixin WithDate<T extends WithDateState> on Cubit<T> {
 }
 
 abstract class WithDateState {
-  WithDateState({DateTime? date}) : date = date ?? DateTime.now();
+  WithDateState({DateTime? date}) : date = date ?? roundToNearest5(DateTime.now());
 
   final DateTime date;
 
   WithDateState copyWith({
     DateTime date,
   });
+
+  String get dateUtcString {
+    return date
+        .toUtc()
+        .toIso8601String()
+        .replaceAll(RegExp(':\\d{2}\\.\\d+'), ':00');
+  }
 }

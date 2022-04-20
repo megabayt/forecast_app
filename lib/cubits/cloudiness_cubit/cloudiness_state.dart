@@ -4,7 +4,7 @@ part of 'cloudiness_cubit.dart';
 class CloudinessState extends WithDateState {
   CloudinessState({
     DateTime? date,
-    this.data = const [],
+    this.data = const {},
     this.maxOn = true,
     this.max = 40,
   }) : super(date: (date ?? DateTime.now()));
@@ -12,7 +12,7 @@ class CloudinessState extends WithDateState {
   @override
   CloudinessState copyWith({
     DateTime? date,
-    List<Date>? data,
+    Map<String, dynamic>? data,
     bool? maxOn,
     double? max,
     double? value,
@@ -24,18 +24,15 @@ class CloudinessState extends WithDateState {
         max: max ?? this.max,
       );
 
-  final List<Date> data;
+  final Map<String, dynamic> data;
   final bool maxOn;
   final double max;
 
   double get value {
-    return data
-        .firstWhereOrNull(
-            (element) => element.date.difference(date).inMinutes.abs() < 5)
-        ?.value ?? 0;
+    return data[dateUtcString] ?? 0;
   }
 
-  get recommended {
+  bool get recommended {
     return maxOn && value < max;
   }
 }

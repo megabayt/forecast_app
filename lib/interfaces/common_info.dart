@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:core';
 
 CommonInfo commonInfoFromJson(String str) =>
     CommonInfo.fromJson(json.decode(str));
@@ -41,7 +42,7 @@ class CommonInfo {
         data: data ?? this.data,
       );
 
-  List<Date> getValueByParameter(String parameter) {
+  Map<String, dynamic> getValueByParameter(String parameter) {
     try {
       return data
           .firstWhere(
@@ -51,7 +52,7 @@ class CommonInfo {
           .first
           .dates;
     } catch (e) {
-      return [];
+      return {};
     }
   }
 
@@ -111,12 +112,12 @@ class Coordinate {
 
   final double lat;
   final double lon;
-  final List<Date> dates;
+  final Map<String, dynamic> dates;
 
   Coordinate copyWith({
     double? lat,
     double? lon,
-    List<Date>? dates,
+    Map<String, dynamic>? dates,
   }) =>
       Coordinate(
         lat: lat ?? this.lat,
@@ -124,44 +125,23 @@ class Coordinate {
         dates: dates ?? this.dates,
       );
 
-  factory Coordinate.fromJson(Map<String, dynamic> json) => Coordinate(
-        lat: json["lat"].toDouble(),
-        lon: json["lon"].toDouble(),
-        dates: List<Date>.from(json["dates"].map((x) => Date.fromJson(x))),
-      );
+  factory Coordinate.fromJson(Map<String, dynamic> json) {
+    final dates = <String, dynamic>{};
+    json["dates"].forEach((date) {
+      dates[date['date']] = date['value'];
+    });
+    return Coordinate(
+      lat: json["lat"].toDouble(),
+      lon: json["lon"].toDouble(),
+      dates: dates,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "lat": lat,
-        "lon": lon,
-        "dates": List<dynamic>.from(dates.map((x) => x.toJson())),
-      };
-}
-
-class Date {
-  Date({
-    required this.date,
-    required this.value,
-  });
-
-  final DateTime date;
-  final dynamic value;
-
-  Date copyWith({
-    DateTime? date,
-    dynamic value,
-  }) =>
-      Date(
-        date: date ?? this.date,
-        value: value ?? this.value,
-      );
-
-  factory Date.fromJson(Map<String, dynamic> json) => Date(
-        date: DateTime.parse(json["date"]),
-        value: json["value"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "date": date.toIso8601String(),
-        "value": value,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "lat": lat,
+      "lon": lon,
+      "dates": dates,
+    };
+  }
 }

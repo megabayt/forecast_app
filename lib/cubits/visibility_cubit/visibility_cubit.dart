@@ -2,12 +2,10 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:forecast_app/enums/distance_unit.dart';
-import 'package:forecast_app/interfaces/common_info.dart';
 import 'package:forecast_app/mixins/with_date.dart';
 import 'package:forecast_app/mixins/with_distance_unit.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
 
 part 'visibility_state.dart';
 
@@ -32,7 +30,7 @@ class VisibilityCubit extends HydratedCubit<VisibilityState>
     super.close();
   }
 
-  onData(List<Date> data) {
+  onData(Map<String, dynamic> data) {
     emit(state.copyWith(
       data: data,
     ));

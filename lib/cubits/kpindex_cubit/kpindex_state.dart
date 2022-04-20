@@ -4,7 +4,7 @@ part of 'kpindex_cubit.dart';
 class KpIndexState extends WithDateState {
   KpIndexState({
     DateTime? date,
-    this.data = const [],
+    this.data = const {},
     this.maxOn = true,
     this.max = 5,
   }) : super(date: (date ?? DateTime.now()));
@@ -12,7 +12,7 @@ class KpIndexState extends WithDateState {
   @override
   KpIndexState copyWith({
     DateTime? date,
-    List<Date>? data,
+    Map<String, dynamic>? data,
     bool? maxOn,
     int? max,
     int? value,
@@ -24,18 +24,15 @@ class KpIndexState extends WithDateState {
         max: max ?? this.max,
       );
 
-  final List<Date> data;
+  final Map<String, dynamic> data;
   final bool maxOn;
   final int max;
 
   int get value {
-    return data
-        .firstWhereOrNull(
-            (element) => element.date.difference(date).inMinutes.abs() < 5)
-        ?.value ?? 0;
+    return data[dateUtcString]?.toInt() ?? 0;
   }
 
-  get recommended {
+  bool get recommended {
     return maxOn && value < max;
   }
 }

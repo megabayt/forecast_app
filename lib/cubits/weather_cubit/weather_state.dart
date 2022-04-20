@@ -3,15 +3,15 @@ part of 'weather_cubit.dart';
 class WeatherState extends WithDateState {
   WeatherState({
     DateTime? date,
-    this.data = const [],
+    this.data = const {},
   }) : super(date: (date ?? DateTime.now()));
 
-  final List<Date> data;
+  final Map<String, dynamic> data;
 
   @override
   WeatherState copyWith({
     DateTime? date,
-    List<Date>? data,
+    Map<String, dynamic>? data,
   }) =>
       WeatherState(
         date: date ?? this.date,
@@ -19,9 +19,6 @@ class WeatherState extends WithDateState {
       );
 
   int get value {
-    return data
-        .firstWhereOrNull(
-            (element) => element.date.difference(date).inMinutes.abs() < 5)
-        ?.value ?? 0;
+    return data[dateUtcString] ?? 0;
   }
 }

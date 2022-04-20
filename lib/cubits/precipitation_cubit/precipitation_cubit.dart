@@ -1,9 +1,7 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
-import 'package:forecast_app/interfaces/common_info.dart';
 import 'package:forecast_app/mixins/with_date.dart';
 import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
 
 part 'precipitation_state.dart';
 
@@ -20,7 +18,7 @@ class PrecipitationCubit extends HydratedCubit<PrecipitationState>
     super.close();
   }
 
-  onData(List<Date> data) {
+  onData(Map<String, dynamic> data) {
     emit(state.copyWith(
       data: data,
     ));
