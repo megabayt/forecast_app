@@ -24,7 +24,7 @@ class SunState extends WithDateState {
       );
 
   String get sunrise {
-    final sunriseStr = sunrises[dateUtcString];
+    final sunriseStr = sunrises[roundToNearest5String(date)];
     if (sunriseStr == null) {
       return '';
     }
@@ -33,7 +33,7 @@ class SunState extends WithDateState {
   }
 
   String get sunset {
-    final sunsetStr = sunsets[dateUtcString];
+    final sunsetStr = sunsets[roundToNearest5String(date)];
     if (sunsetStr == null) {
       return '';
     }

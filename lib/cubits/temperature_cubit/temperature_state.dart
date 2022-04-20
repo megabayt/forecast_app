@@ -60,15 +60,23 @@ class TemperatureState extends WithDateState {
   }
 
   double get value {
-    return convertToTemperatureUnit(
-        data[dateUtcString] ?? 0, TemperatureUnit.celsius, temperatureUnit);
+    return getValueByDate(date);
+  }
+
+  double getValueByDate(DateTime date) {
+    return convertToTemperatureUnit(data[roundToNearest5String(date)] ?? 0,
+        TemperatureUnit.celsius, temperatureUnit);
   }
 
   bool get recommended {
-    if (maxOn && value >= max) {
+    return getRecommendedByDate(date);
+  }
+
+  bool getRecommendedByDate(DateTime date) {
+    if (maxOn && getValueByDate(date) >= max) {
       return false;
     }
-    if (minOn && value <= min) {
+    if (minOn && getValueByDate(date) <= min) {
       return false;
     }
     return true;

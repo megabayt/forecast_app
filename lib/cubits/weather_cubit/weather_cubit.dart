@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:forecast_app/mixins/with_date.dart';
+import 'package:forecast_app/utils/helpers.dart';
 
 part 'weather_state.dart';
 

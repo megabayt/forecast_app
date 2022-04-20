@@ -29,10 +29,18 @@ class KpIndexState extends WithDateState {
   final int max;
 
   int get value {
-    return data[dateUtcString]?.toInt() ?? 0;
+    return getValueByDate(date);
+  }
+
+  int getValueByDate(DateTime date) {
+    return data[roundToNearest5String(date)] ?? 0;
   }
 
   bool get recommended {
-    return maxOn && value < max;
+    return getRecommendedByDate(date);
+  }
+
+  bool getRecommendedByDate(DateTime date) {
+    return maxOn && getValueByDate(date) < max;
   }
 }

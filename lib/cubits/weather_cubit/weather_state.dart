@@ -19,6 +19,6 @@ class WeatherState extends WithDateState {
       );
 
   int get value {
-    return data[dateUtcString] ?? 0;
+    return data[roundToNearest5String(date)] ?? 0;
   }
 }

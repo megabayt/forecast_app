@@ -38,30 +38,10 @@ class WindState extends WithDateState {
             : _max,
       );
 
-  double get direction {
-    return directionData[dateUtcString] ?? 0;
-  }
-
   final Map<String, dynamic> speedData;
   final Map<String, dynamic> gustsData;
   final Map<String, dynamic> directionData;
   final SpeedUnit speedUnit;
-
-  double get speed {
-    return convertToSpeedUnit(
-      speedData[dateUtcString] ?? 0,
-      SpeedUnit.ms,
-      speedUnit,
-    );
-  }
-
-  double get gusts {
-    return convertToSpeedUnit(
-      gustsData[dateUtcString] ?? 0,
-      SpeedUnit.ms,
-      speedUnit,
-    );
-  }
 
   final bool gustsOn;
   final bool maxOn;
@@ -70,15 +50,55 @@ class WindState extends WithDateState {
     return convertToSpeedUnit(_max, SpeedUnit.ms, speedUnit).floorToDouble();
   }
 
+  double get direction {
+    return getDirectionByDate(date);
+  }
+
+  double getDirectionByDate(DateTime date) {
+    return directionData[roundToNearest5String(date)] ?? 0;
+  }
+
+  double get speed {
+    return getSpeedByDate(date);
+  }
+
+  double getSpeedByDate(DateTime date) {
+    return convertToSpeedUnit(
+      speedData[roundToNearest5String(date)] ?? 0,
+      SpeedUnit.ms,
+      speedUnit,
+    );
+  }
+
+  double get gusts {
+    return getGustsByDate(date);
+  }
+
+  double getGustsByDate(DateTime date) {
+    return convertToSpeedUnit(
+      gustsData[roundToNearest5String(date)] ?? 0,
+      SpeedUnit.ms,
+      speedUnit,
+    );
+  }
+
   bool get recommendedSpeed {
-    if (maxOn && speed >= max) {
+    return getRecommendedSpeed(date);
+  }
+
+  bool getRecommendedSpeed(DateTime date) {
+    if (maxOn && getSpeedByDate(date) >= max) {
       return false;
     }
     return true;
   }
 
   bool get recommendedGusts {
-    if (gustsOn && maxOn && gusts >= max) {
+    return getRecommendedGusts(date);
+  }
+
+  bool getRecommendedGusts(DateTime date) {
+    if (gustsOn && maxOn && getGustsByDate(date) >= max) {
       return false;
     }
     return true;

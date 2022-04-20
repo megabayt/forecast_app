@@ -28,10 +28,18 @@ class PrecipitationState extends WithDateState {
   final double max;
 
   double get value {
-    return data[dateUtcString] ?? 0;
+    return getValueByDate(date);
+  }
+
+  double getValueByDate(DateTime date) {
+    return data[roundToNearest5String(date)] ?? 0;
   }
 
   bool get recommended {
-    return maxOn && value < max;
+    return getRecommendedByDate(date);
+  }
+
+  bool getRecommendedByDate(DateTime date) {
+    return maxOn && getValueByDate(date) < max;
   }
 }

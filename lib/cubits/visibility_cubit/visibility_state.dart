@@ -33,13 +33,6 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
   final DistanceUnit distanceUnit;
   @override
   final DateTime date;
-  @override
-  String get dateUtcString {
-    return date
-        .toUtc()
-        .toIso8601String()
-        .replaceAll(RegExp(':\\d{2}\\.\\d+'), ':00');
-  }
 
   final Map<String, dynamic> data;
   final bool minOn;
@@ -60,8 +53,12 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
   }
 
   double get value {
+    return getValueByDate(date);
+  }
+
+  double getValueByDate(DateTime date) {
     return convertToDistanceUnit(
-        data[dateUtcString] ?? 0,
+        data[roundToNearest5String(date)] ?? 0,
         DistanceUnit.meters,
         distanceUnit == DistanceUnit.meters
             ? DistanceUnit.kilometers
@@ -69,11 +66,22 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
   }
 
   double get valueInMetersOrMiles {
+    return getValueByDateInMetersOrMiles(date);
+  }
+
+  double getValueByDateInMetersOrMiles(DateTime date) {
     return convertToDistanceUnit(
-        data[dateUtcString] ?? 0, DistanceUnit.meters, distanceUnit);
+      data[roundToNearest5String(date)] ?? 0,
+      DistanceUnit.meters,
+      distanceUnit,
+    );
   }
 
   bool get recommended {
-    return minOn && valueInMetersOrMiles > min;
+    return getRecommendedByDate(date);
+  }
+
+  bool getRecommendedByDate(DateTime date) {
+    return minOn && getValueByDateInMetersOrMiles(date) > min;
   }
 }

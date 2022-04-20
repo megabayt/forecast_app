@@ -163,3 +163,10 @@ DateTime roundToNearest5(DateTime? value) {
     0,
   );
 }
+
+String roundToNearest5String(DateTime? value) {
+  return roundToNearest5(value)
+      .toUtc()
+      .toIso8601String()
+      .replaceAll(RegExp(':\\d{2}\\.\\d+'), ':00');
+}
