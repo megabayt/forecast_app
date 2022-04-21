@@ -9,7 +9,7 @@ class VisibilityState implements WithDistanceUnitState, WithDateState {
     this.minOn = true,
     double min = 2000,
   })  : _min = min,
-        date = date ?? DateTime.now();
+        date = date ?? roundToNearest5(DateTime.now());
 
   @override
   VisibilityState copyWith({

@@ -12,7 +12,7 @@ class TemperatureState extends WithDateState {
     double max = 30,
   })  : _min = min,
         _max = max,
-        super(date: (date ?? DateTime.now()));
+        super(date: date);
 
   @override
   TemperatureState copyWith({

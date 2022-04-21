@@ -124,8 +124,8 @@ EventTransformer<E> debounce<E>(Duration duration) {
   };
 }
 
-DateTime convertHourToDateTime(double hour) {
-  final dateFromValue = DateTime.now();
+DateTime convertHourToDateTime(double hour, [DateTime? base]) {
+  base ??= DateTime.now();
   var minute = ((hour % 1) * 60).toInt();
   if (minute % 5 <= 2.5) {
     minute -= minute % 5;
@@ -133,18 +133,15 @@ DateTime convertHourToDateTime(double hour) {
     minute += 5 - minute % 5;
   }
   return DateTime(
-    dateFromValue.year,
-    dateFromValue.month,
-    dateFromValue.day,
+    base.year,
+    base.month,
+    base.day,
     hour.toInt(),
     minute,
-    0,
-    0,
-    0,
   );
 }
 
-DateTime roundToNearest5(DateTime? value) {
+DateTime roundToNearest5([DateTime? value]) {
   value ??= DateTime.now();
   var minute = value.minute;
   if (minute % 5 <= 2.5) {
@@ -158,9 +155,6 @@ DateTime roundToNearest5(DateTime? value) {
     value.day,
     value.hour,
     minute,
-    0,
-    0,
-    0,
   );
 }
 

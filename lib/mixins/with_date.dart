@@ -10,7 +10,10 @@ mixin WithDate<T extends WithDateState> on Cubit<T> {
   void subDate(DateCubit dateCubit) {
     _sub = dateCubit.stream.listen((event) {
       emit(state.copyWith(
-        date: event.date,
+        date: event.now.add(Duration(
+          days: event.offsetDays,
+          minutes: event.offsetMinutes,
+        )),
       ) as T);
     });
   }

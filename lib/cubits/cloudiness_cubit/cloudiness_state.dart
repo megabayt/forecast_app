@@ -7,7 +7,7 @@ class CloudinessState extends WithDateState {
     this.data = const {},
     this.maxOn = true,
     this.max = 40,
-  }) : super(date: (date ?? DateTime.now()));
+  }) : super(date: date);
 
   @override
   CloudinessState copyWith({

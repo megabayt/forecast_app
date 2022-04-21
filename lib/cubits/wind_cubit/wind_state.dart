@@ -12,7 +12,7 @@ class WindState extends WithDateState {
     this.gustsOn = true,
     double max = 30,
   })  : _max = max,
-        super(date: (date ?? DateTime.now()));
+        super(date: date);
 
   @override
   WindState copyWith({
@@ -83,10 +83,10 @@ class WindState extends WithDateState {
   }
 
   bool get recommendedSpeed {
-    return getRecommendedSpeed(date);
+    return getRecommendedSpeedByDate(date);
   }
 
-  bool getRecommendedSpeed(DateTime date) {
+  bool getRecommendedSpeedByDate(DateTime date) {
     if (maxOn && getSpeedByDate(date) >= max) {
       return false;
     }
@@ -94,10 +94,10 @@ class WindState extends WithDateState {
   }
 
   bool get recommendedGusts {
-    return getRecommendedGusts(date);
+    return getRecommendedGustsByDate(date);
   }
 
-  bool getRecommendedGusts(DateTime date) {
+  bool getRecommendedGustsByDate(DateTime date) {
     if (gustsOn && maxOn && getGustsByDate(date) >= max) {
       return false;
     }

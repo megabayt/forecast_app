@@ -4,7 +4,7 @@ class WeatherState extends WithDateState {
   WeatherState({
     DateTime? date,
     this.data = const {},
-  }) : super(date: (date ?? DateTime.now()));
+  }) : super(date: date);
 
   final Map<String, dynamic> data;
 

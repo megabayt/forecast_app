@@ -7,7 +7,7 @@ class KpIndexState extends WithDateState {
     this.data = const {},
     this.maxOn = true,
     this.max = 5,
-  }) : super(date: (date ?? DateTime.now()));
+  }) : super(date: date);
 
   @override
   KpIndexState copyWith({

@@ -6,7 +6,7 @@ class SunState extends WithDateState {
     DateTime? date,
     this.sunrises = const {},
     this.sunsets = const {},
-  }) : super(date: (date ?? DateTime.now()));
+  }) : super(date: date);
 
   final Map<String, dynamic> sunrises;
   final Map<String, dynamic> sunsets;
