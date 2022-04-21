@@ -7,8 +7,8 @@ class DateCubit extends Cubit<DateState> {
   DateCubit() : super(DateState());
 
   onData({
-    required int offsetMinutes,
-    required int offsetDays,
+    int? offsetMinutes,
+    int? offsetDays,
   }) {
     emit(state.copyWith(
       offsetMinutes: offsetMinutes,

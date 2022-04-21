@@ -1,113 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
-import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
-import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
-import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
-import 'package:forecast_app/cubits/visibility_cubit/visibility_cubit.dart';
-import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
+import 'package:forecast_app/mixins/recommended.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class TimeSlider extends StatelessWidget {
+class TimeSlider extends StatelessWidget with RecommendedMixin {
   const TimeSlider({Key? key}) : super(key: key);
 
   @override
   build(BuildContext context) {
-    return BlocBuilder<TemperatureCubit, TemperatureState>(
-        builder: (temperatureContext, temperatureCubitState) {
-      return BlocBuilder<WindCubit, WindState>(
-          builder: (windContext, windCubitState) {
-        return BlocBuilder<PrecipitationCubit, PrecipitationState>(
-            builder: (precipitationContext, precipitationCubitState) {
-          return BlocBuilder<CloudinessCubit, CloudinessState>(
-              builder: (cloudinessContext, cloudinessCubitState) {
-            return BlocBuilder<KpIndexCubit, KpIndexState>(
-                builder: (kpIndexContext, kpIndexCubitState) {
-              return BlocBuilder<VisibilityCubit, VisibilityState>(
-                  builder: (visibilityContext, visibilityState) {
-                return BlocBuilder<DateCubit, DateState>(
-                    builder: (dateContext, dateState) {
-                  final now = dateState.now;
-                  final date = now.add(Duration(
-                      days: dateState.offsetDays,
-                      minutes: dateState.offsetMinutes));
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                          width: double.infinity,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              stops: List.generate(288, (index) {
-                                return index / 288;
-                              }),
-                              colors: List.generate(288, (index) {
-                                final date =
-                                    convertHourToDateTime(index * 24 / 288);
-                                final recommended = temperatureCubitState
-                                        .getRecommendedByDate(date) &&
-                                    windCubitState
-                                        .getRecommendedSpeedByDate(date) &&
-                                    windCubitState
-                                        .getRecommendedGustsByDate(date) &&
-                                    precipitationCubitState
-                                        .getRecommendedByDate(date) &&
-                                    cloudinessCubitState
-                                        .getRecommendedByDate(date) &&
-                                    kpIndexCubitState
-                                        .getRecommendedByDate(date) &&
-                                    visibilityState.getRecommendedByDate(date);
+    return buildRecommended(builder:
+        (bool Function(DateTime date1, [DateTime? date2]) getRecommended) {
+      return BlocBuilder<DateCubit, DateState>(
+          builder: (dateContext, dateState) {
+        final now = dateState.now;
+        final date = now.add(Duration(
+            days: dateState.offsetDays, minutes: dateState.offsetMinutes));
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+                width: double.infinity,
+                height: 30,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    stops: List.generate(288, (index) {
+                      return index / 288;
+                    }),
+                    colors: List.generate(288, (index) {
+                      final base = dateState.now.add(Duration(
+                        days: dateState.offsetDays,
+                      ));
+                      final date = convertHourToDateTime(index * 24 / 288, base);
+                      final recommended = getRecommended(date);
 
-                                return recommended
-                                    ? Colors.green.shade300
-                                    : Colors.red.shade300;
-                              }),
-                            ),
-                          )),
-                      SfSliderTheme(
-                        data: SfSliderThemeData(
-                          activeTrackColor: Colors.transparent,
-                          inactiveTrackColor: Colors.transparent,
-                          thumbColor: Colors.white,
-                          overlayRadius: 0,
-                          thumbRadius: 0,
-                        ),
-                        child: SfSlider(
-                          min: 0.0,
-                          max: 24.0,
-                          value: date.hour + date.minute / 60,
-                          interval: 3,
-                          showTicks: true,
-                          minorTicksPerInterval: 1,
-                          tickShape: _SfTickShape(),
-                          minorTickShape: _SfMinorTickShape(),
-                          thumbShape: _SfThumbShape(),
-                          onChanged: (dynamic value) {
-                            // more than 23:55
-                            if (value > 23.92) {
-                              return;
-                            }
-                            final dateByValue =
-                                convertHourToDateTime(value, date);
-                            final diff = dateByValue.difference(now);
-                            BlocProvider.of<DateCubit>(context).onData(
-                              offsetDays: diff.inDays,
-                              offsetMinutes: diff.inMinutes,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                      return recommended
+                          ? Colors.green.shade300
+                          : Colors.red.shade300;
+                    }),
+                  ),
+                )),
+            SfSliderTheme(
+              data: SfSliderThemeData(
+                activeTrackColor: Colors.transparent,
+                inactiveTrackColor: Colors.transparent,
+                thumbColor: Colors.white,
+                overlayRadius: 0,
+                thumbRadius: 0,
+              ),
+              child: SfSlider(
+                min: 0.0,
+                max: 24.0,
+                value: date.hour + date.minute / 60,
+                interval: 3,
+                showTicks: true,
+                minorTicksPerInterval: 1,
+                tickShape: _SfTickShape(),
+                minorTickShape: _SfMinorTickShape(),
+                thumbShape: _SfThumbShape(),
+                onChanged: (dynamic value) {
+                  // more than 23:55
+                  if (value > 23.92) {
+                    return;
+                  }
+                  final dateByValue = convertHourToDateTime(value);
+                  final diff = dateByValue.difference(now);
+                  BlocProvider.of<DateCubit>(context).onData(
+                    offsetMinutes: diff.inMinutes,
                   );
-                });
-              });
-            });
-          });
-        });
+                },
+              ),
+            ),
+          ],
+        );
       });
     });
   }

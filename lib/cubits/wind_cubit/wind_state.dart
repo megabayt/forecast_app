@@ -93,6 +93,19 @@ class WindState extends WithDateState {
     return true;
   }
 
+  bool getRecommendedSpeedByDateRange(DateTime date1, DateTime date2) {
+    int sum = 0;
+    int count = 0;
+    for (DateTime date = date1;
+        date.isBefore(date2);
+        date = date.add(const Duration(minutes: 5))) {
+      sum += getRecommendedSpeedByDate(date) ? 1 : 0;
+      count++;
+    }
+
+    return sum / count > 0.5;
+  }
+
   bool get recommendedGusts {
     return getRecommendedGustsByDate(date);
   }
@@ -102,5 +115,18 @@ class WindState extends WithDateState {
       return false;
     }
     return true;
+  }
+
+  bool getRecommendedGustsByDateRange(DateTime date1, DateTime date2) {
+    int sum = 0;
+    int count = 0;
+    for (DateTime date = date1;
+        date.isBefore(date2);
+        date = date.add(const Duration(minutes: 5))) {
+      sum += getRecommendedGustsByDate(date) ? 1 : 0;
+      count++;
+    }
+
+    return sum / count > 0.5;
   }
 }
