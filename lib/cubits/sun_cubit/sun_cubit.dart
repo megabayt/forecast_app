@@ -1,21 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
-import 'package:forecast_app/mixins/with_date.dart';
-import 'package:forecast_app/utils/helpers.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:meta/meta.dart';
 
 part 'sun_state.dart';
 
-class SunCubit extends Cubit<SunState> with WithDate {
-  SunCubit({required DateCubit dateCubit}) : super(SunState()) {
-    subDate(dateCubit);
-  }
-
-  @override
-  close() async {
-    await unsubDate();
-    super.close();
-  }
+class SunCubit extends Cubit<SunState> {
+  SunCubit() : super(const SunState());
 
   onData({
     required Map<String, dynamic> sunrise,

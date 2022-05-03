@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
-import 'package:forecast_app/cubits/sun_cubit/sun_cubit.dart';
+import 'package:forecast_app/mixins/date_mixin.dart';
+import 'package:forecast_app/mixins/sun_mixin.dart';
 
-class Sun extends StatelessWidget {
+class Sun extends StatelessWidget with DateMixin, SunMixin {
   const Sun({Key? key}) : super(key: key);
 
   @override
   build(BuildContext context) {
     return BlocBuilder<CommonBloc, CommonState>(
       builder: (commonBlocContext, commonBlocState) {
-        return BlocBuilder<SunCubit, SunState>(
-          builder: (sunCubitContext, sunCubitState) {
+        return buildSun(
+          builder: ({required sunrise, required sunset}) {
             return Card(
               elevation: 2,
               child: Padding(
@@ -34,14 +35,14 @@ class Sun extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Icon(Icons.arrow_upward),
-                                Text(sunCubitState.sunrise),
+                                Text(sunrise),
                               ],
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Icon(Icons.arrow_downward),
-                                Text(sunCubitState.sunset),
+                                Text(sunset),
                               ],
                             ),
                           ])

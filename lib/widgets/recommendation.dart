@@ -1,37 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forecast_app/cubits/cloudiness_cubit/cloudiness_cubit.dart';
-import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
-import 'package:forecast_app/cubits/precipitation_cubit/precipitation_cubit.dart';
-import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
-import 'package:forecast_app/cubits/visibility_cubit/visibility_cubit.dart';
-import 'package:forecast_app/cubits/wind_cubit/wind_cubit.dart';
+import 'package:forecast_app/mixins/cloudiness_mixin.dart';
+import 'package:forecast_app/mixins/common_settings_mixin.dart';
+import 'package:forecast_app/mixins/date_mixin.dart';
+import 'package:forecast_app/mixins/kpindex_mixin.dart';
+import 'package:forecast_app/mixins/precipitation_mixin.dart';
+import 'package:forecast_app/mixins/temperature_mixin.dart';
+import 'package:forecast_app/mixins/visibility_mixin.dart';
+import 'package:forecast_app/mixins/wind_mixin.dart';
 
-class Recommendation extends StatelessWidget {
+class Recommendation extends StatelessWidget
+    with
+        DateMixin,
+        CommonSettingsMixin,
+        TemperatureMixin,
+        WindMixin,
+        PrecipitationMixin,
+        CloudinessMixin,
+        KpIndexMixin,
+        VisibilityMixin {
   const Recommendation({Key? key}) : super(key: key);
 
   @override
   build(BuildContext context) {
-    return BlocBuilder<TemperatureCubit, TemperatureState>(
-      builder: (temperatureContext, temperatureCubitState) {
-        return BlocBuilder<WindCubit, WindState>(
-          builder: (windContext, windCubitState) {
-            return BlocBuilder<PrecipitationCubit, PrecipitationState>(
-              builder: (precipitationContext, precipitationCubitState) {
-                return BlocBuilder<CloudinessCubit, CloudinessState>(
-                  builder: (cloudinessContext, cloudinessCubitState) {
-                    return BlocBuilder<KpIndexCubit, KpIndexState>(
-                      builder: (kpIndexContext, kpIndexCubitState) {
-                        return BlocBuilder<VisibilityCubit, VisibilityState>(
-                          builder: (visibilityContext, visibilityState) {
-                            final recommended =
-                                temperatureCubitState.recommended &&
-                                    windCubitState.recommendedSpeed &&
-                                    windCubitState.recommendedGusts &&
-                                    precipitationCubitState.recommended &&
-                                    cloudinessCubitState.recommended &&
-                                    kpIndexCubitState.recommended &&
-                                    visibilityState.recommended;
+    return buildTemperature(
+      builder: (recommendedTemperature, temperature, temperatureUnit) {
+        return buildWind(
+          builder: ({
+            required direction,
+            required distanceUnit,
+            required gusts,
+            required height,
+            required recommendedGusts,
+            required recommendedSpeed,
+            required speed,
+            required speedUnit,
+          }) {
+            return buildPrecipitation(
+              builder: (recommendedPrecipitation, precipitation) {
+                return buildCloudiness(
+                  builder: (recommendedCloudiness, cloudiness) {
+                    return buildKpIndex(
+                      builder: (recommendedKpIndex, kpIndex) {
+                        return buildVisibility(
+                          builder: (recommendedVisibility, visibility, distanceUnit) {
+                            final recommended = recommendedTemperature &&
+                                recommendedGusts &&
+                                recommendedSpeed &&
+                                recommendedPrecipitation &&
+                                recommendedCloudiness &&
+                                recommendedKpIndex &&
+                                recommendedVisibility;
 
                             return Card(
                               elevation: 2,

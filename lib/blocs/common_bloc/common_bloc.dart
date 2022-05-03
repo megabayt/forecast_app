@@ -111,7 +111,7 @@ class CommonBloc extends Bloc<CommonEvent, CommonState> {
           result.getValueByParameter('wind_dir_$height$distanceUnitStr:d');
       _windCubit.onDirectionData(windDirection);
 
-      final precipitation = result.getValueByParameter('precip_1h:mm');
+      final precipitation = result.getValueByParameter('prob_precip_1h:p');
       _precipitationCubit.onData(precipitation);
 
       final cloudiness = result.getValueByParameter('total_cloud_cover:p');

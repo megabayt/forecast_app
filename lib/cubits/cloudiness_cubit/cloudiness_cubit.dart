@@ -1,21 +1,12 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
-import 'package:forecast_app/mixins/with_date.dart';
 import 'package:meta/meta.dart';
-import 'package:forecast_app/utils/helpers.dart';
 
 part 'cloudiness_state.dart';
+part 'cloudiness_cubit.g.dart';
 
-class CloudinessCubit extends HydratedCubit<CloudinessState> with WithDate {
-  CloudinessCubit({required DateCubit dateCubit}) : super(CloudinessState()) {
-    subDate(dateCubit);
-  }
-
-  @override
-  close() async {
-    await unsubDate();
-    super.close();
-  }
+class CloudinessCubit extends HydratedCubit<CloudinessState> {
+  CloudinessCubit() : super(const CloudinessState());
 
   onData(Map<String, dynamic> data) {
     emit(state.copyWith(

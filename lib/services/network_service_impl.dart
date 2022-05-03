@@ -39,7 +39,7 @@ class NetworkServiceImpl implements NetworkService {
       params.add('t_$height$distanceUnit:C');
     }
     if (precipitation != null && precipitation) {
-      params.add('precip_1h:mm');
+      params.add('prob_precip_1h:p');
     }
     if (cloudiness != null && cloudiness) {
       params.add('total_cloud_cover:p');
@@ -75,75 +75,81 @@ class NetworkServiceImpl implements NetworkService {
     final password = dotenv.env['PASSWORD'];
     final base64Str = base64Encode(utf8.encode('$login:$password'));
 
-    try {
-      var now = DateTime.now();
-      now = DateTime(now.year, now.month, now.day);
-      var timestampNow = now.toIso8601String().split('.')[0];
-      final tzOffsetNow = now.timeZoneOffset.toString().split(':');
-      timestampNow +=
-          '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
+    var now = DateTime.now();
+    now = DateTime(now.year, now.month, now.day);
+    var timestampNow = now.toIso8601String().split('.')[0];
+    final tzOffsetNow = now.timeZoneOffset.toString().split(':');
+    timestampNow +=
+        '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
 
-      final timestampPlusWeek =
-          now.add(const Duration(days: 7)).toIso8601String().split('.')[0] +
-              '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
-      final resultTimestampPlusWeek = '$timestampNow--$timestampPlusWeek:PT5M';
+    final timestampPlusWeek =
+        now.add(const Duration(days: 7)).toIso8601String().split('.')[0] +
+            '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
+    final resultTimestampPlusWeek = '$timestampNow--$timestampPlusWeek:PT5M';
 
-      final timestampPlusTwoDays =
-          now.add(const Duration(days: 2)).toIso8601String().split('.')[0] +
-              '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
-      final resultTimestampPlusTwoDays = '$timestampNow--$timestampPlusTwoDays:PT5M';
+    final timestampPlusTwoDays =
+        now.add(const Duration(days: 2)).toIso8601String().split('.')[0] +
+            '.000+${tzOffsetNow[0].padLeft(2, '0')}:${tzOffsetNow[1]}';
+    final resultTimestampPlusTwoDays =
+        '$timestampNow--$timestampPlusTwoDays:PT5M';
 
-      final commonArguments = {
-        const Symbol('timestamp'): resultTimestampPlusWeek,
-        const Symbol('latitude'): point.latitude,
-        const Symbol('longitude'): point.longitude,
-        const Symbol('height'): height,
-        const Symbol('distanceUnit'): distanceUnit,
-      };
+    final commonArguments = {
+      const Symbol('timestamp'): resultTimestampPlusWeek,
+      const Symbol('latitude'): point.latitude,
+      const Symbol('longitude'): point.longitude,
+      const Symbol('height'): height,
+      const Symbol('distanceUnit'): distanceUnit,
+    };
 
-      final url1 = Function.apply(_generateUrl, [], {
-        ...commonArguments,
-        const Symbol('windSpeed'): true,
-        const Symbol('windDir'): true,
-        const Symbol('windGusts'): true,
-        const Symbol('temperature'): true,
-        const Symbol('precipitation'): true,
-        const Symbol('cloudiness'): true,
-        const Symbol('visibility'): true,
-        const Symbol('weatherSymbol'): true,
-        const Symbol('sunrise'): true,
-        const Symbol('sunset'): true,
-      });
+    final url1 = Function.apply(_generateUrl, [], {
+      ...commonArguments,
+      const Symbol('windSpeed'): true,
+      const Symbol('windDir'): true,
+      const Symbol('windGusts'): true,
+      const Symbol('temperature'): true,
+      const Symbol('precipitation'): true,
+      const Symbol('cloudiness'): true,
+      const Symbol('visibility'): true,
+      const Symbol('weatherSymbol'): true,
+      const Symbol('sunrise'): true,
+      const Symbol('sunset'): true,
+    });
 
-      final response1 = await http.get(
-          Uri.https(
-            'api.meteomatics.com',
-            url1,
-          ),
-          headers: {'Authorization': 'Basic $base64Str'});
+    final response1 = await http.get(
+        Uri.https(
+          'api.meteomatics.com',
+          url1,
+        ),
+        headers: {'Authorization': 'Basic $base64Str'});
 
-      CommonInfo response1Body =
-          CommonInfo.fromJson(json.decode(response1.body));
-
-      final url2 = Function.apply(_generateUrl, [], {
-        ...commonArguments,
-        const Symbol('timestamp'): resultTimestampPlusTwoDays,
-        const Symbol('kpIndex'): true,
-      });
-
-      final response2 = await http.get(
-          Uri.https(
-            'api.meteomatics.com',
-            url2,
-          ),
-          headers: {'Authorization': 'Basic $base64Str'});
-
-      CommonInfo response2Body =
-          CommonInfo.fromJson(json.decode(response2.body));
-
-      return response1Body.mergeWith(response2Body);
-    } catch (e) {
-      return CommonInfo.fromJson({});
+    if (response1.body[0] != '{') {
+      // print(response1.body);
+      throw Exception(response1.body);
     }
+
+    CommonInfo response1Body =
+        CommonInfo.fromJson(json.decode(response1.body));
+
+    final url2 = Function.apply(_generateUrl, [], {
+      ...commonArguments,
+      const Symbol('timestamp'): resultTimestampPlusTwoDays,
+      const Symbol('kpIndex'): true,
+    });
+
+    final response2 = await http.get(
+        Uri.https(
+          'api.meteomatics.com',
+          url2,
+        ),
+        headers: {'Authorization': 'Basic $base64Str'});
+
+    if (response2.body[0] != '{') {
+      throw Exception(response2.body);
+    }
+
+    CommonInfo response2Body =
+        CommonInfo.fromJson(json.decode(response2.body));
+
+    return response1Body.mergeWith(response2Body);
   }
 }

@@ -40,7 +40,10 @@ class VisibilityBottomSheet extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SfSlider(
-                        value: visibilityCubitState.min,
+                        value: convertToDistanceUnit(
+                            visibilityCubitState.min,
+                            DistanceUnit.meters,
+                            commonSettingsState.distanceUnit),
                         min: 0,
                         max: convertToDistanceUnit(50000, DistanceUnit.meters,
                             commonSettingsState.distanceUnit),
@@ -52,7 +55,10 @@ class VisibilityBottomSheet extends StatelessWidget {
                         },
                       ),
                     ),
-                    Text((visibilityCubitState.min)
+                    Text(convertToDistanceUnit(
+                                visibilityCubitState.min,
+                                DistanceUnit.meters,
+                                commonSettingsState.distanceUnit)
                             .floor()
                             .toString()
                             .padLeft(3, ' ') +

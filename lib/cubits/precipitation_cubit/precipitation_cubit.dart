@@ -1,23 +1,12 @@
-import 'package:forecast_app/utils/helpers.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
-import 'package:forecast_app/mixins/with_date.dart';
 import 'package:meta/meta.dart';
 
 part 'precipitation_state.dart';
+part 'precipitation_cubit.g.dart';
 
-class PrecipitationCubit extends HydratedCubit<PrecipitationState>
-    with WithDate {
-  PrecipitationCubit({required DateCubit dateCubit})
-      : super(PrecipitationState()) {
-    subDate(dateCubit);
-  }
-
-  @override
-  close() async {
-    await unsubDate();
-    super.close();
-  }
+class PrecipitationCubit extends HydratedCubit<PrecipitationState> {
+  PrecipitationCubit() : super(const PrecipitationState());
 
   onData(Map<String, dynamic> data) {
     emit(state.copyWith(

@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
+import 'package:forecast_app/mixins/cloudiness_mixin.dart';
+import 'package:forecast_app/mixins/common_settings_mixin.dart';
+import 'package:forecast_app/mixins/date_mixin.dart';
+import 'package:forecast_app/mixins/kpindex_mixin.dart';
+import 'package:forecast_app/mixins/precipitation_mixin.dart';
 import 'package:forecast_app/mixins/recommended.dart';
+import 'package:forecast_app/mixins/temperature_mixin.dart';
+import 'package:forecast_app/mixins/visibility_mixin.dart';
+import 'package:forecast_app/mixins/wind_mixin.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class TimeSlider extends StatelessWidget with RecommendedMixin {
+class TimeSlider extends StatelessWidget
+    with
+        DateMixin,
+        CommonSettingsMixin,
+        TemperatureMixin,
+        WindMixin,
+        PrecipitationMixin,
+        CloudinessMixin,
+        KpIndexMixin,
+        VisibilityMixin,
+        RecommendedMixin {
   const TimeSlider({Key? key}) : super(key: key);
 
   @override
@@ -33,7 +51,8 @@ class TimeSlider extends StatelessWidget with RecommendedMixin {
                       final base = dateState.now.add(Duration(
                         days: dateState.offsetDays,
                       ));
-                      final date = convertHourToDateTime(index * 24 / 288, base);
+                      final date =
+                          convertHourToDateTime(index * 24 / 288, base);
                       final recommended = getRecommended(date);
 
                       return recommended

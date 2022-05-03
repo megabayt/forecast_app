@@ -1,22 +1,13 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:forecast_app/enums/speed_unit.dart';
-import 'package:forecast_app/mixins/with_date.dart';
-import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
 
 part 'wind_state.dart';
+part 'wind_cubit.g.dart';
 
-class WindCubit extends HydratedCubit<WindState> with WithDate {
-  WindCubit({required DateCubit dateCubit}) : super(WindState()) {
-    subDate(dateCubit);
-  }
-
-  @override
-  close() async {
-    await unsubDate();
-    super.close();
-  }
+class WindCubit extends HydratedCubit<WindState> {
+  WindCubit() : super(const WindState());
 
   onSpeedData(Map<String, dynamic> data) {
     emit(state.copyWith(speedData: data));
@@ -67,6 +58,6 @@ class WindCubit extends HydratedCubit<WindState> with WithDate {
         'SpeedUnit': state.speedUnit.index,
         'gustsOn': state.gustsOn,
         'maxOn': state.maxOn,
-        'max': state._max,
+        'max': state.max,
       };
 }

@@ -164,3 +164,20 @@ String roundToNearest5String(DateTime? value) {
       .toIso8601String()
       .replaceAll(RegExp(':\\d{2}\\.\\d+'), ':00');
 }
+
+bool getRecommendedByDateRange(
+  DateTime date1,
+  DateTime date2,
+  bool Function(DateTime date) getRecommendedByDate,
+) {
+  int sum = 0;
+  int count = 0;
+  for (DateTime date = date1;
+      date.isBefore(date2);
+      date = date.add(const Duration(minutes: 5))) {
+    sum += getRecommendedByDate(date) ? 1 : 0;
+    count++;
+  }
+
+  return sum / count > 0.5;
+}

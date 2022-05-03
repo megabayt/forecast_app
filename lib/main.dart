@@ -37,38 +37,31 @@ Future main() async {
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                WeatherCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
+            create: (context) => WeatherCubit(),
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                SunCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
+            create: (context) => SunCubit(),
             lazy: false,
           ),
           BlocProvider(
-            create: (context) => TemperatureCubit(
-                dateCubit: BlocProvider.of<DateCubit>(context)),
+            create: (context) => TemperatureCubit(),
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                WindCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
+            create: (context) => WindCubit(),
             lazy: false,
           ),
           BlocProvider(
-            create: (context) => PrecipitationCubit(
-                dateCubit: BlocProvider.of<DateCubit>(context)),
+            create: (context) => PrecipitationCubit(),
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                CloudinessCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
+            create: (context) => CloudinessCubit(),
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                KpIndexCubit(dateCubit: BlocProvider.of<DateCubit>(context)),
+            create: (context) => KpIndexCubit(),
             lazy: false,
           ),
           BlocProvider(
@@ -76,15 +69,7 @@ Future main() async {
             lazy: false,
           ),
           BlocProvider(
-            create: (context) {
-              final commonSettingsCubit =
-                  BlocProvider.of<CommonSettingsCubit>(context);
-              final dateCubit = BlocProvider.of<DateCubit>(context);
-              return VisibilityCubit(
-                commonSettingsCubit: commonSettingsCubit,
-                dateCubit: dateCubit,
-              );
-            },
+            create: (context) => VisibilityCubit(),
             lazy: false,
           ),
           BlocProvider(

@@ -1,9 +1,10 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:forecast_app/enums/distance_unit.dart';
-import 'package:forecast_app/utils/helpers.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
 
 part 'common_settings_state.dart';
+part 'common_settings_cubit.g.dart';
 
 class CommonSettingsCubit extends HydratedCubit<CommonSettingsState> {
   CommonSettingsCubit() : super(const CommonSettingsState());
@@ -30,6 +31,6 @@ class CommonSettingsCubit extends HydratedCubit<CommonSettingsState> {
   @override
   Map<String, dynamic> toJson(CommonSettingsState state) => {
         'distanceUnit': state.distanceUnit.index,
-        'height': state._height,
+        'height': state.height,
       };
 }

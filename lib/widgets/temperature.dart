@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/cubits/common_settings_cubit/common_settings_cubit.dart';
-import 'package:forecast_app/cubits/temperature_cubit/temperature_cubit.dart';
 import 'package:forecast_app/enums/temperature_unit.dart';
+import 'package:forecast_app/mixins/date_mixin.dart';
+import 'package:forecast_app/mixins/temperature_mixin.dart';
 import 'package:forecast_app/utils/helpers.dart';
 import 'package:forecast_app/widgets/temperature_bottom_sheet.dart';
 
-class Temperature extends StatelessWidget {
+class Temperature extends StatelessWidget with DateMixin, TemperatureMixin {
   const Temperature({Key? key}) : super(key: key);
 
   @override
@@ -16,12 +17,11 @@ class Temperature extends StatelessWidget {
       builder: (commonBlocContext, commonBlocState) {
         return BlocBuilder<CommonSettingsCubit, CommonSettingsState>(
           builder: (commonSettingsCubitContext, commonSettingsCubitState) {
-            return BlocBuilder<TemperatureCubit, TemperatureState>(
-              builder: (temperatureCubitContext, temperatureCubitState) {
-                var temperatureString =
-                    temperatureCubitState.value.toStringAsFixed(1);
+            return buildTemperature(
+              builder: (recommended, value, temperatureUnit) {
+                var temperatureString = value.toStringAsFixed(1);
                 temperatureString +=
-                    '°${temperatureCubitState.temperatureUnit == TemperatureUnit.celsius ? 'C' : 'F'}';
+                    '°${temperatureUnit == TemperatureUnit.celsius ? 'C' : 'F'}';
 
                 var heightString = 'на ';
                 heightString +=
@@ -41,7 +41,7 @@ class Temperature extends StatelessWidget {
                   },
                   child: Card(
                     elevation: 2,
-                    color: temperatureCubitState.recommended ? Colors.white : Colors.red[300],
+                    color: recommended ? Colors.white : Colors.red[300],
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Column(

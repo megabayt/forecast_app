@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
 import 'package:forecast_app/widgets/captured_satellites.dart';
 import 'package:forecast_app/widgets/cloudiness.dart';
 import 'package:forecast_app/widgets/day_picker.dart' as day_picker_widget;
@@ -22,48 +24,56 @@ class Conditions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width / 3;
-    const height = 120;
-    final ratio = width / height;
+    return BlocBuilder<CommonBloc, CommonState>(builder: (context, state) {
+      if (state.error != '') {
+        return Center(
+          child: Text(state.error),
+        );
+      }
+    
+      final size = MediaQuery.of(context).size;
+      final width = size.width / 3;
+      const height = 120;
+      final ratio = width / height;
 
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const LocationSearch(),
-          const Recommendation(),
-          Expanded(
-            flex: 1,
-            child: GridView.count(
-              primary: false,
-              crossAxisCount: 3,
-              childAspectRatio: ratio,
-              children: const <Widget>[
-                Weather(),
-                Sun(),
-                Temperature(),
-                WindSpeed(),
-                Gusts(),
-                WindDirection(),
-                Precipitation(),
-                Cloudiness(),
-                visibility_widget.Visibility(),
-                VisibleSatellites(),
-                KpIndex(),
-                CapturedSatellites(),
-              ],
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const LocationSearch(),
+            const Recommendation(),
+            Expanded(
+              flex: 1,
+              child: GridView.count(
+                primary: false,
+                crossAxisCount: 3,
+                childAspectRatio: ratio,
+                children: const <Widget>[
+                  Weather(),
+                  Sun(),
+                  Temperature(),
+                  WindSpeed(),
+                  Gusts(),
+                  WindDirection(),
+                  Precipitation(),
+                  Cloudiness(),
+                  visibility_widget.Visibility(),
+                  VisibleSatellites(),
+                  KpIndex(),
+                  CapturedSatellites(),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          const NonFlightZones(),
-          const SizedBox(height: 10),
-          const TimeSlider(),
-          const day_picker_widget.DayPicker(),
-        ],
-      ),
-    );
+            const SizedBox(height: 10),
+            const NonFlightZones(),
+            const SizedBox(height: 10),
+            const TimeSlider(),
+            const day_picker_widget.DayPicker(),
+          ],
+        ),
+      );
+    });
   }
 }

@@ -1,20 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
-import 'package:forecast_app/mixins/with_date.dart';
-import 'package:forecast_app/utils/helpers.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 
 part 'weather_state.dart';
+part 'weather_cubit.g.dart';
 
-class WeatherCubit extends Cubit<WeatherState> with WithDate {
-  WeatherCubit({required DateCubit dateCubit}) : super(WeatherState()) {
-    subDate(dateCubit);
-  }
-
-  @override
-  close() async {
-    await unsubDate();
-    super.close();
-  }
+class WeatherCubit extends Cubit<WeatherState> {
+  WeatherCubit() : super(WeatherState());
 
   onData(Map<String, dynamic> data) {
     emit(state.copyWith(data: data));

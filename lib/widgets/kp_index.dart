@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forecast_app/blocs/common_bloc/common_bloc.dart';
-import 'package:forecast_app/cubits/kpindex_cubit/kpindex_cubit.dart';
+import 'package:forecast_app/mixins/date_mixin.dart';
+import 'package:forecast_app/mixins/kpindex_mixin.dart';
 import 'package:forecast_app/widgets/kpindex_bottom_sheet.dart';
 
-class KpIndex extends StatelessWidget {
+class KpIndex extends StatelessWidget with DateMixin, KpIndexMixin {
   const KpIndex({Key? key}) : super(key: key);
 
   @override
   build(BuildContext context) {
     return BlocBuilder<CommonBloc, CommonState>(
       builder: (commonBlocContext, commonBlocState) {
-        return BlocBuilder<KpIndexCubit, KpIndexState>(
-          builder: (kpIndexCubitContext, kpIndexCubitState) {
+        return buildKpIndex(
+          builder: (recommended, value) {
             return GestureDetector(
               onTap: () {
                 showModalBottomSheet(
@@ -25,9 +26,7 @@ class KpIndex extends StatelessWidget {
               },
               child: Card(
                 elevation: 2,
-                color: kpIndexCubitState.recommended
-                    ? Colors.white
-                    : Colors.red[300],
+                color: recommended ? Colors.white : Colors.red[300],
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Column(
@@ -41,7 +40,7 @@ class KpIndex extends StatelessWidget {
                       commonBlocState.isFetching
                           ? const CircularProgressIndicator()
                           : Text(
-                              kpIndexCubitState.value.toString(),
+                              value.toString(),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                     ],

@@ -50,7 +50,8 @@ class WindBottomSheet extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SfSlider(
-                        value: windCubitState.max,
+                        value: convertToSpeedUnit(windCubitState.max,
+                            SpeedUnit.ms, windCubitState.speedUnit),
                         min: convertToSpeedUnit(
                             0, SpeedUnit.ms, windCubitState.speedUnit),
                         max: convertToSpeedUnit(
@@ -63,7 +64,8 @@ class WindBottomSheet extends StatelessWidget {
                         },
                       ),
                     ),
-                    Text((windCubitState.max)
+                    Text(convertToSpeedUnit(windCubitState.max, SpeedUnit.ms,
+                                windCubitState.speedUnit)
                             .floor()
                             .toString()
                             .padLeft(5, ' ') +

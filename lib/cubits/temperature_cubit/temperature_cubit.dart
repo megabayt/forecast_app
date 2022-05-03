@@ -1,22 +1,13 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:forecast_app/cubits/date_cubit/date_cubit.dart';
 import 'package:forecast_app/enums/temperature_unit.dart';
-import 'package:forecast_app/mixins/with_date.dart';
-import 'package:forecast_app/utils/helpers.dart';
 import 'package:meta/meta.dart';
 
 part 'temperature_state.dart';
+part 'temperature_cubit.g.dart';
 
-class TemperatureCubit extends HydratedCubit<TemperatureState> with WithDate {
-  TemperatureCubit({required DateCubit dateCubit}) : super(TemperatureState()) {
-    subDate(dateCubit);
-  }
-
-  @override
-  close() async {
-    await unsubDate();
-    super.close();
-  }
+class TemperatureCubit extends HydratedCubit<TemperatureState> {
+  TemperatureCubit() : super(const TemperatureState());
 
   onData(Map<String, dynamic> data) {
     emit(state.copyWith(
@@ -69,7 +60,7 @@ class TemperatureCubit extends HydratedCubit<TemperatureState> with WithDate {
         'temperatureUnit': state.temperatureUnit.index,
         'minOn': state.minOn,
         'maxOn': state.maxOn,
-        'min': state._min,
-        'max': state._max,
+        'min': state.min,
+        'max': state.max,
       };
 }
